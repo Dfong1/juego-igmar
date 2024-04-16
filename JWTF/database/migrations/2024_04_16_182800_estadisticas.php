@@ -13,10 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('roles',function(Blueprint $table){
-
-            $table->id();
-            $table->string('rol');
+        Schema::create('estadisticas', function (Blueprint $table){
+    $table->foreignId('user_id')->references('id')->on('users');
+      $table->integer('ganadas');
+      $table->integer('perdidas');
+      $table->foreignId('rival_id')->references('id')->on('users');
         });
     }
 
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        schema::dropIfExists('estadisticas');
     }
 };

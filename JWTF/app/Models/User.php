@@ -25,7 +25,6 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'verificacion'
-        
     ];
 
     /**
@@ -61,30 +60,5 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function Rol(){
-        return $this->belongsTo(Rol::class,'rol_id');
-    }
-
-
-    public function orden_venta()
-    {
-       return $this->hasMany(Orden_Venta::class);
-    }
-
-    public function citas()
-    {
-       return $this->hasMany(Cita::class);
-    }
-
-
-    public function ingreso_reparacion()
-    {
-        return  $this->hasMany(Ingreso_Reparacion::class);
-    }
-
-
-    public function userpaquete()
-    {
-        return $this-> HasMany(Userpaquete::class);
-    }
+  
 }

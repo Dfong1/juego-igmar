@@ -29,7 +29,6 @@ class LogHistoryController extends Controller
             "data" => $log->data
         ];
     });
-    event(New obtenerlogs($logs));
     return response()->json($logs, 200);
 }
 

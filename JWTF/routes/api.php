@@ -48,6 +48,9 @@ Route::group([
     Route::post('me', 'App\Http\Controllers\AuthController@me');
     Route::post('register', 'App\Http\Controllers\AuthController@register');
     Route::get('activate/{user}', 'App\Http\Controllers\AuthController@activate')->name('activate')->middleware('signed');
+
+
+    
     Route::post('verify', [AuthController::class,'verify']);
     Route::post('verificar', [AuthController::class,'verificarcodigo']);
 

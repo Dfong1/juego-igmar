@@ -18,14 +18,9 @@ return new class extends Migration
             $table->string('name',30);
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->unsignedBigInteger('rol_id')->default(3);
-            $table->foreign('rol_id')->references('id')->on('roles');
             $table->boolean('is_active')->default(false);
-
             $table->string('password');
             $table->string('verificacion')->nullable();
-            
-
             $table->rememberToken();
             $table->timestamps();
         });

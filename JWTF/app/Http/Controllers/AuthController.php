@@ -52,15 +52,12 @@ class AuthController extends Controller
 
     public function generatecodigo()
     {
-
      $uniquecode= str::random(6);
      $hashedCode=Hash::make($uniquecode);
      auth()->user()->update(['verificacion' => $hashedCode]);
      Mail::to(auth()->user()->email)->send(new CodeEmail($uniquecode));
     
-
      return response()->json(['Codigo de verificacion  enviado a tu correo ']);
-
     }
 
     public function verificarCodigo(Request $request)
@@ -190,8 +187,8 @@ class AuthController extends Controller
     {
         $user->is_active=true;
         $user->save();
-        
-      
+
+        return view('mails.confirmemail');  
     }
 
 }
