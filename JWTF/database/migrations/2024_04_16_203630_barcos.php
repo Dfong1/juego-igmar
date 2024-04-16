@@ -13,16 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        schema::create('buscarrivales',function(Blueprint $table){
-            $table->id();
+        Schema::create('barcos', function (Blueprint $table){
             $table->foreignId('user_id')->references('id')->on('users');
-
-            $table->unsignedBigInteger('rival_id')->nullable();
-
-            $table->foreign('rival_id')->references('id')->on('users');
-
-
-            $table->timestamps();
+            $table->integer('user_barcos');
+            $table->foreignId('rival_id')->references('id')->on('users');
+            $table->integer('rival_barcos');
+            
         });
     }
 
@@ -33,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('barcos');
     }
 };
