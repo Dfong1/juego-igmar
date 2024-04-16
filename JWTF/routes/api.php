@@ -33,6 +33,7 @@ use App\Http\Controllers\CitasController;
 use App\Http\Controllers\IngresoReparacionesController;
 use App\Http\Controllers\LogHistoryController;
 use App\Http\Controllers\ReportesController;
+use App\Http\Controllers\BuscarRivalesController;
 
 
 Route::group([
@@ -61,6 +62,9 @@ Route::group([
 
 
     Route::get('logs/{id}',[LogHistoryController::class,'index']);
+
+    Route::post('/postear',[BuscarRivalesController::class,'post']);
+    Route::post('/updatear',[BuscarRivalesController::class,'update']);
     
 });
 
