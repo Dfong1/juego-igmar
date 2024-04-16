@@ -1,0 +1,24 @@
+.container{
+    height: 100vh;
+}
+
+.form-container{
+    width: 100%;
+    margin: auto;
+    height: 100%;
+    border-radius: 5px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form {
+    width: 50%;
+    height: 50%;
+    margin: auto;
+    align-self: center;
+}
+
+h1{
+    text-align: center;
+}
