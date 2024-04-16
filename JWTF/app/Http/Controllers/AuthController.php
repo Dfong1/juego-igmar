@@ -56,7 +56,6 @@ class AuthController extends Controller
      $hashedCode=Hash::make($uniquecode);
      auth()->user()->update(['verificacion' => $hashedCode]);
      Mail::to(auth()->user()->email)->send(new CodeEmail($uniquecode));
-    
      return response()->json(['Codigo de verificacion  enviado a tu correo ']);
     }
 
@@ -82,7 +81,6 @@ class AuthController extends Controller
 
     public function verify(Request $request)
     {
-        
         try {
             return response()->json([
                 "isActive" => true,
@@ -105,7 +103,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(["user"=>auth()->user(),"checando avr si es asi"=> auth()->user()->role_id]);
+        return response()->json(["user"=>auth()->user(),"Usuario encontrado"=> auth()->user()->role_id]);
     }
 
     /**

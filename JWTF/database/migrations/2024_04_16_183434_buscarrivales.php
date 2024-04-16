@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         schema::create('buscarrivales',function(Blueprint $table){
-            $table->foreignId('user_id')->references('user_id')->on('users');
-            $table->foreignId('rival_id')->references('user_id')->on('users');
+            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('rival_id')->references('id')->on('users');
         });
     }
 
