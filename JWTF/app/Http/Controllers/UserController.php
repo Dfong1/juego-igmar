@@ -62,7 +62,6 @@ class UserController extends Controller
     $validate = Validator::make(
         $request->all(), [
             "name" => "required|max:30",
-            // Excluye el ID del usuario actual de la validación unique
             "email" => "required|email|unique:users,email,".$id,
             "rol_id" => "numeric|between:1,3",
             "password" => "min:8|string"
