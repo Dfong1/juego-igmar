@@ -63,7 +63,6 @@ class AuthController extends Controller
     public function generatecodigo()
     {
      $uniquecode= str::random(6);
-    //  $hashedCode=Hash::make($uniquecode);
      auth()->user()->update(['verificacion' => $uniquecode]);
      Mail::to(auth()->user()->email)->send(new CodeEmail($uniquecode));
      return response()->json(['Codigo de verificacion  enviado a tu correo ']);
