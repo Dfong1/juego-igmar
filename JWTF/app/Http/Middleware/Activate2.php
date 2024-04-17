@@ -2,17 +2,12 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use PHPOpenSourceSaver\JWTAuth\Contracts\Providers\Auth as ProvidersAuth;
-use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
-use PHPOpenSourceSaver\JWTAuth\JWT;
+use App\Models\User;
 
-class AuthActive
+class Activate2
 {
     /**
      * Handle an incoming request.
@@ -20,14 +15,14 @@ class AuthActive
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
-     * 
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user() && $request->user()->is_active) {
+        $user = User::where('email', $request->input('email'))->first();
+
+        if ($user && $user->is_active) {
             return $next($request);
         }
-
-        abort(403, 'Unauthorized');
+        return response()->json(['error' => 'Credenciales incorrectas'], 401);
     }
 }

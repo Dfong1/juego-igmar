@@ -38,35 +38,42 @@ use App\Http\Controllers\BuscarRivalesController;
 
 Route::group([
 
-    'middleware' => 'api',
     'prefix' => 'auth'
 
 ], function ($router) {
-
-    Route::post('login', [AuthController::class,'login'])->middleware('auth.active');
+    Route::post('register', 'App\Http\Controllers\AuthController@register');
+    Route::post('login', [AuthController::class,'login'])->middleware('activate2');
     Route::post('logout', 'App\Http\Controllers\AuthController@logout');
     Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');
-    Route::post('me', 'App\Http\Controllers\AuthController@me')->middleware(['auth.twoFactor','auth.active']);
-    Route::post('register', 'App\Http\Controllers\AuthController@register');
-    Route::get('activate/{user}', 'App\Http\Controllers\AuthController@activate')->name('activate')->middleware('signed');
+
+    Route::post('verificar', [AuthController::class,'verifyTwoFactorCode'])->middleware(['active']);
+});
 
 
-    
-    
-    Route::post('verificar', [AuthController::class,'verifyTwoFactorCode'])->middleware(['auth.active']);
+Route::get('activate/{user}', 'App\Http\Controllers\AuthController@activate')->name('activate')->middleware('signed');
+
+
+Route::group([
+    'middleware' => ['api', 'activate2', 'twoFactor'],
+    'prefix' => 'user'
+], function ($router) {
 
     Route::get('get',[UserController::class,'index']);
     Route::post('post',[UserController::class,'store'])->middleware('authrole2');
     Route::delete('delete/{id}',[UserController::class,'destroy'])->middleware('authrole')->where('id','[0-9]+');
     Route::put('put/{id}',[UserController::class,'update'])->middleware('authrole2')->where('id','[0-9]+');
-
-
+    
+    
     Route::get('logs/{id}',[LogHistoryController::class,'index']);
-
+    
     Route::post('/postear',[BuscarRivalesController::class,'post']);
     Route::post('/updatear',[BuscarRivalesController::class,'update']);
-    
+    Route::get('me', 'App\Http\Controllers\AuthController@me');
 });
+
+
+
+
 
 
 
