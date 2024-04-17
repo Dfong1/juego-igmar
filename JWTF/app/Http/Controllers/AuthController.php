@@ -27,8 +27,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth:api',['except' => ['login','register','activate']]);
-       
+        $this->middleware('auth:api',['except' => ['login','register','activate']]); 
     }
 
     /**
@@ -184,6 +183,12 @@ class AuthController extends Controller
         $user->save();
 
         return view('mails.confirmemail');  
+    }
+
+
+    public function verificarlogin()
+    {
+        return true;
     }
 
 }

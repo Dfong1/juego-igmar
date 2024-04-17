@@ -44,6 +44,7 @@ Route::group([
 ], function ($router) {
     Route::post('register', 'App\Http\Controllers\AuthController@register');
     Route::post('login', [AuthController::class,'login'])->middleware('activate2');
+    Route::post('verificarlogin',[AuthController::class,'verificarlogin'])->middleware('activate2');
 
     Route::post('verificar', [AuthController::class,'verifyTwoFactorCode'])->middleware(['active']);
 });
@@ -74,6 +75,9 @@ Route::group([
 });
 Route::post('coordinates',[JuegosController::class,'storecoordenates']);
 Route::post('turnos',[JuegosController::class,'turnos']);
+
+
+
 
 
 
