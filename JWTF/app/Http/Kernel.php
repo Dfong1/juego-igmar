@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
         'auth.active' => \App\Http\Middleware\AuthActive::class,
         'authrole' => \App\Http\Middleware\AuthRole::class,
         'authrole2' => \App\Http\Middleware\AuthRole2::class,
+        'auth.twoFactor' => \App\Http\Middleware\VerifyTwoFactorTokenMiddleware::class,
     ];
 }

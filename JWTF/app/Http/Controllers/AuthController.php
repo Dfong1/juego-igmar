@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use App\Mail\CodeEmail;
+use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Random;
 
 class AuthController extends Controller
@@ -59,41 +60,24 @@ class AuthController extends Controller
      return response()->json(['Codigo de verificacion  enviado a tu correo ']);
     }
 
-    public function verificarCodigo(Request $request)
+    public function verifyTwoFactorCode(Request $request)
     {
-    $request->validate([
-        'verificacion' => 'required|string|min:6|max:255', 
-    ]);
-
-    $user = auth()->user();
-
-    if (!$user) {
-        return response()->json(['error' => 'Autenticación requerida'], 401);
-    }
-
-    if (Hash::check($request->verificacion, $user->verificacion)) {
-        return response()->json(['message' => 'Token de verificación válido'], 200);
-    } else {
-        return response()->json(['error' => 'Token de verificación inválido'], 401);
-    }
-    }
-
-
-    public function verify(Request $request)
-    {
-        try {
-            return response()->json([
-                "isActive" => true,
-                "tipo usuario" => auth()->user()->rol_id
-            ]);             
-        
-        } catch (\Exception $e) {
-            return response()->json(["isActive"=>false], 422);
+        $validator = Validator::make($request->all(), [
+            'verificacion' => 'required|digits:6',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
         }
-
+        $user = auth()->user();
+        if ($user->verificacion == $request->verificacion) {
+            $user->codigoVerificado = true;
+            $user->save();
+            JWTAuth::parseToken()->invalidate();
+            $token = JWTAuth::fromUser($user);
+            return response()->json(['message' => 'Código de autenticación válido','data' => $user, 'token' => $token], 200);
+        }
+        return response()->json(['error' => 'Código de autenticación incorrecto'], 401);
     }
-
-
 
 
     /**

@@ -26,15 +26,7 @@ class AuthActive
         $user = User::where('email', $request->email)
             ->where('is_active', true)
             ->first();
-       // $user = JWTAuth::user();
-        /* if()
-        {
-            return $next($request);
-        } */
-        //$user=$request->user();
-        //$auth;
-        //NO JALAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        //YA JALOOOOOOOO😭😭
+      
         
         if ($user) {
             return $next($request);
