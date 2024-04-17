@@ -43,8 +43,17 @@ class AuthController extends Controller
         if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
+
+        $user = auth()->user();
+        if(!$user){
+            return response()->json(["msg" => "Usuario no encontrado"], 404);
+        }
+        $user->codigoVerificado = false;
+        if ($user->codigoVerificado == false) {
+            $this->generatecodigo();
+            return response()->json(['msg' => 'Redireccionando a la autenticación de dos factores', "token" => $token], 200);
+        }  
         $this->generatecodigo();
-       
 
         return $this->respondWithToken($token);
     }
@@ -54,8 +63,8 @@ class AuthController extends Controller
     public function generatecodigo()
     {
      $uniquecode= str::random(6);
-     $hashedCode=Hash::make($uniquecode);
-     auth()->user()->update(['verificacion' => $hashedCode]);
+    //  $hashedCode=Hash::make($uniquecode);
+     auth()->user()->update(['verificacion' => $uniquecode]);
      Mail::to(auth()->user()->email)->send(new CodeEmail($uniquecode));
      return response()->json(['Codigo de verificacion  enviado a tu correo ']);
     }
@@ -63,7 +72,7 @@ class AuthController extends Controller
     public function verifyTwoFactorCode(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'verificacion' => 'required|digits:6',
+            'verificacion' => 'required|min:6|max:6',
         ]);
         if ($validator->fails()) {
             return response()->json(['error' => $validator->errors()], 422);
@@ -87,7 +96,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(["user"=>auth()->user(),"Usuario encontrado"=> auth()->user()->role_id]);
+        return response()->json(auth()->user());
     }
 
     /**

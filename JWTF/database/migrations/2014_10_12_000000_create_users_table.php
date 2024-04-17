@@ -21,6 +21,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(false);
             $table->string('password');
             $table->string('verificacion')->nullable();
+            $table->boolean('codigoVerificado')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
