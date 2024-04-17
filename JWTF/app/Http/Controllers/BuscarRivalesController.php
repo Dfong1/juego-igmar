@@ -26,7 +26,6 @@ class BuscarRivalesController extends Controller
         $matchplayer->user_id = $player->id;
         $matchplayer->save();
         event(new MatchPlayers($player));
-
         return response()->json($player);
 
     }

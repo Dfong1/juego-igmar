@@ -73,6 +73,10 @@ Route::group([
 
 });
 Route::post('coordinates',[JuegosController::class,'storecoordenates']);
+Route::post('turnos',[JuegosController::class,'turnos']);
+
+
+
 
 
 

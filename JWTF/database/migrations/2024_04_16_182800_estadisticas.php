@@ -13,10 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('estadisticas', function (Blueprint $table){
-    $table->foreignId('user_id')->references('id')->on('users');
-      $table->integer('ganadas');
-      $table->integer('perdidas');
+     Schema::create('estadisticas', function (Blueprint $table){
+      $table->id();
+      $table->foreignId('user_id')->references('id')->on('users');
+      $table->boolean('partida');
       $table->foreignId('rival_id')->references('id')->on('users');
         });
     }

@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Estadistica extends Model
 {
     use HasFactory;
+    protected $table = 'barcos';
+
+    protected $fillable=[
+        'user_id',
+        'partida',
+        'rival_id',
+    ];
 }
