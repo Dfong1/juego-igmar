@@ -43,17 +43,9 @@ Route::group([
 ], function ($router) {
     Route::post('register', 'App\Http\Controllers\AuthController@register');
     Route::post('login', [AuthController::class,'login'])->middleware('activate2');
-    Route::post('logout', 'App\Http\Controllers\AuthController@logout');
-    Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');
-<<<<<<< HEAD
-    Route::post('me', 'App\Http\Controllers\AuthController@me')->middleware(['auth.twoFactor']);
-    Route::post('register', 'App\Http\Controllers\AuthController@register');
-    Route::get('activate/{user}', 'App\Http\Controllers\AuthController@activate')->name('activate')->middleware('signed');
-=======
 
     Route::post('verificar', [AuthController::class,'verifyTwoFactorCode'])->middleware(['active']);
 });
->>>>>>> cdedf16ece89078f2df23d607dba77997fd362ac
 
 
 Route::get('activate/{user}', 'App\Http\Controllers\AuthController@activate')->name('activate')->middleware('signed');
@@ -71,6 +63,8 @@ Route::group([
     
     
     Route::get('logs/{id}',[LogHistoryController::class,'index']);
+    Route::post('logout', 'App\Http\Controllers\AuthController@logout');
+    Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');
     
     Route::post('/postear',[BuscarRivalesController::class,'post']);
     Route::post('/updatear',[BuscarRivalesController::class,'update']);
