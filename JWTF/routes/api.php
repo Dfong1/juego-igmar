@@ -52,7 +52,7 @@ Route::get('activate/{user}', 'App\Http\Controllers\AuthController@activate')->n
 
 
 Route::group([
-    'middleware' => ['api', 'activate2', 'twoFactor'],
+    'middleware' => ['api', 'active', 'twoFactor'],
     'prefix' => 'user'
 ], function ($router) {
 
