@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Login } from '../Interfaces/login';
 import { User } from '../Interfaces/user-interface';
+import { api } from '../Interfaces/enviroment';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class LoginService {
-  private loginURL = "http://127.0.0.1:8000/api/auth/login";
+  private loginURL = `${api}/api/auth/login`;
   private token: string|null = null;
   private static instance: LoginService
 
@@ -22,8 +22,7 @@ export class LoginService {
   }
   
   login(email: string, password: string): Observable<any> {
-    const url = 'http://127.0.0.1:8000/api/auth/login';
-    return this.http.post<Login>(url, { email, password });
+    return this.http.post<any>(this.loginURL, { email, password });
   }
 
   setToken(token: string|null){
@@ -34,23 +33,17 @@ export class LoginService {
   }
 
   
-  LogIn(user: Login): Observable<User> {
-    return this.http.post<User>(this.loginURL, user)
+  LogIn(email: string, password: string): Observable<User> {
+    return this.http.post<User>(this.loginURL, { email, password })
   }
 
   Verificar(): Observable<any> {
-    let url = 'http://127.0.0.1:8000/api/auth/me'
-    return this.http.post<any>(url, null)
-  }
-
-
-  register(user: User): Observable<any> {
-    const url = 'http://127.0.0.1:8000/api/auth/register';
-    return this.http.post<User>(url, user);
+    let url = `${api}/api/auth/me`
+    return this.http.post<any>(url, null)
   }
   
   verificarToken(token: string): Observable<any> {
-    const url = 'http://127.0.0.1:8000/api/auth/verify';
+    const url = `${api}/api/auth/verify`;
     return this.http.post<any>(url, { token });
   }
   

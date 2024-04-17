@@ -9,18 +9,27 @@
     
     <div class="container">
         <div class="form-container">
-            <form class="form">
+            <form class="form" [formGroup]="form">
                 <h1>Iniciar sesión</h1>
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com">
+                    <input type="email" class="form-control" id="floatingMail" formControlName="email" placeholder="name@example.com" [class.is-invalid]="email.invalid && (email.dirty || email.touched)">
                     <label for="floatingInput">Correo electronico</label>
+
+                    <div [hidden]="email.valid || email.pristine">
+                        <span class="text-danger" *ngIf="email.errors?.['required']">Este campo es obligatorio</span>
+                        <span class="text-danger" *ngIf="email.errors?.['email']">El texto debe cumplir un formato de correo</span>
+                    </div>
                 </div>
                 <div class="form-floating">
-                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                    <input type="password" class="form-control" id="floatingPassword" formControlName="password" placeholder="Password" [class.is-invalid]="password.invalid && (password.dirty || password.touched)">
                     <label for="floatingPassword">Contraseña</label>
                 </div>
+                <div [hidden]="password.valid || password.pristine">
+                    <span class="text-danger" *ngIf="password.errors?.['required']">Este campo es obligatorio</span>
+                    <span class="text-danger" *ngIf="password.errors?.['minlength']">Debe de tener un minimo de 8 digitos</span>
+                </div>
 
-                <button type="submit" class="btn btn-primary mt-2" style="width: 100%; margin: auto;" routerLink="/dashboard">Iniciar</button>
+                <button type="submit" class="btn btn-primary mt-2" style="width: 100%; margin: auto;" [disabled]="form.invalid" >Iniciar</button>
                 <p class="mt-3">¿No tienes sesión? <a routerLink="/register">Registrate</a></p>
             </form>
         </div>
