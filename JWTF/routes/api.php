@@ -46,7 +46,7 @@ Route::group([
     Route::post('login', [AuthController::class,'login'])->middleware('auth.active');
     Route::post('logout', 'App\Http\Controllers\AuthController@logout');
     Route::post('refresh', 'App\Http\Controllers\AuthController@refresh');
-    Route::post('me', 'App\Http\Controllers\AuthController@me')->middleware(['auth.twoFactor','auth.active']);
+    Route::post('me', 'App\Http\Controllers\AuthController@me')->middleware(['auth.twoFactor']);
     Route::post('register', 'App\Http\Controllers\AuthController@register');
     Route::get('activate/{user}', 'App\Http\Controllers\AuthController@activate')->name('activate')->middleware('signed');
 
