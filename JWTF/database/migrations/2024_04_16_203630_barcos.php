@@ -14,10 +14,16 @@ return new class extends Migration
     public function up()
     {
         Schema::create('barcos', function (Blueprint $table){
+            $table->id();
             $table->foreignId('user_id')->references('id')->on('users');
             $table->integer('user_barcos');
             $table->foreignId('rival_id')->references('id')->on('users');
             $table->integer('rival_barcos');
+
+            $table->text('coordenate_user');
+            $table->text('coordenate_rival');
+
+            $table->timestamps();
             
         });
     }

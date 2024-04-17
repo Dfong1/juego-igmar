@@ -34,19 +34,14 @@ class BuscarRivalesController extends Controller
     public function update()
     {
         $jugador = auth()->user();
-        $player = MatchPlayer::limit(1)->first();
+        $player = MatchPlayer::latest()->first();
         
         if(!$player){{
             return response()->json(['error' => 'jugadores no encontrados']);
-        }}
-        
+        }}  
         $player->rival_id = $jugador->id;
         $player->save();
-
-        $player->delete();
-
         return response()->json($player);
-
-        
     }
+    
 }

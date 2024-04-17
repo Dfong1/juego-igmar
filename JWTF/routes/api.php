@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\JuegosController;
 use App\Mail\ValidatorEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -69,7 +70,9 @@ Route::group([
     Route::post('/postear',[BuscarRivalesController::class,'post']);
     Route::post('/updatear',[BuscarRivalesController::class,'update']);
     Route::get('me', 'App\Http\Controllers\AuthController@me');
+
 });
+Route::post('coordinates',[JuegosController::class,'storecoordenates']);
 
 
 
