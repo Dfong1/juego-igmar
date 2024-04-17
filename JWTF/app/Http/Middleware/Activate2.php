@@ -23,6 +23,9 @@ class Activate2
         if ($user && $user->is_active) {
             return $next($request);
         }
+        if($user && !$user->is_active){
+        return response()->json(['error' => 'Cuenta no activa'], 401);
+        }
         return response()->json(['error' => 'Credenciales incorrectas'], 401);
     }
 }

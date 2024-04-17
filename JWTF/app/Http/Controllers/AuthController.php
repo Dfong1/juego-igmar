@@ -45,6 +45,11 @@ class AuthController extends Controller
         }
 
         $user = auth()->user();
+        
+        if($user->is_active == 0){
+            return response()->json(['error' => 'Cuenta no activa']);
+        }
+
         if(!$user){
             return response()->json(["msg" => "Usuario no encontrado"], 404);
         }

@@ -10,6 +10,12 @@
     <div class="container">
         <div class="form-container">
             <form class="form" [formGroup]="form">
+                <div class="alert alert-success fade show" role="alert" *ngIf="msg">
+                    {{ msg }}
+                </div>
+                <div class="alert alert-danger fade show" role="alert" *ngIf="errorMsg">
+                    {{ errorMsg }}
+                </div>
                 <h1>Registrate</h1>
                 <div class="form-floating mb-3">
                     <input type="email" class="form-control" id="floatingUser" formControlName="usuario" placeholder="Nombre de usuario" [class.is-invalid]="usuario.invalid && (usuario.dirty || usuario.touched)">
@@ -18,6 +24,9 @@
                     <div [hidden]="usuario.valid || usuario.pristine">
                         <span class="text-danger" *ngIf="usuario.errors?.['required']">Este campo es obligatorio</span>
                         <span class="text-danger" *ngIf="usuario.errors?.['maxlength']">El máximo de caracteres es 30</span>
+                    </div>
+                    <div *ngIf="errorMsg">
+                        <span class="text-danger" *ngFor="let error of nameError">{{error}}</span>
                     </div>
                 </div>
                 <div class="form-floating mb-3">
@@ -28,6 +37,10 @@
                         <span class="text-danger" *ngIf="email.errors?.['required']">Este campo es obligatorio</span>
                         <span class="text-danger" *ngIf="email.errors?.['email']">El texto debe cumplir un formato de correo</span>
                     </div>
+                    
+                    <div *ngIf="errorMsg">
+                        <span class="text-danger" *ngFor="let error of emailError">{{error}}</span>
+                    </div>
                 </div>
                 <div class="form-floating">
                     <input type="password" class="form-control" id="floatingPassword" formControlName="password" placeholder="Password" [class.is-invalid]="password.invalid && (password.dirty || password.touched)">
@@ -37,9 +50,13 @@
                         <span class="text-danger" *ngIf="password.errors?.['required']">Este campo es obligatorio</span>
                         <span class="text-danger" *ngIf="password.errors?.['minlength']">Debe de tener un minimo de 8 digitos</span>
                     </div>
+
+                    <div *ngIf="errorMsg">
+                        <span class="text-danger" *ngFor="let error of passwordError">{{error}}</span>
+                    </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary mt-2" style="width: 100%; margin: auto;" [disabled]="form.invalid">Iniciar</button>
+                <button type="submit" class="btn btn-primary mt-2" style="width: 100%; margin: auto;" [disabled]="form.invalid" (click)="registrar()" >Iniciar</button>
                 <p class="mt-3">¿Ya estás registrado? <a routerLink="">Inicia sesión</a></p>
             </form>
         </div>

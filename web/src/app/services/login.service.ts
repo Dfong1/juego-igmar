@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { User } from '../Interfaces/user-interface';
 import { api } from '../Interfaces/enviroment';
+import { Message } from '../Interfaces/message';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +10,7 @@ import { api } from '../Interfaces/enviroment';
 
 export class LoginService {
   private loginURL = `${api}/api/auth/login`;
+  private codigoURL = `${api}/api/auth/verificar`
   private token: string|null = null;
   private static instance: LoginService
 
@@ -25,6 +26,10 @@ export class LoginService {
     return this.http.post<any>(this.loginURL, { email, password });
   }
 
+  verificarCodigo(codigo: string): Observable<Message> {
+    return this.http.post<Message>(this.codigoURL, { verificacion: codigo});
+  }
+
   setToken(token: string|null){
     this.token = token
   }
@@ -33,8 +38,8 @@ export class LoginService {
   }
 
   
-  LogIn(email: string, password: string): Observable<User> {
-    return this.http.post<User>(this.loginURL, { email, password })
+  LogIn(email: string, password: string): Observable<Message> {
+    return this.http.post<Message>(this.loginURL, { email: email, password: password })
   }
 
   Verificar(): Observable<any> {
