@@ -75,12 +75,18 @@ Route::group([
     Route::get('me', 'App\Http\Controllers\AuthController@me');
 
 });
+
+
 Route::post('coordinates',[JuegosController::class,'storecoordenates']);
 Route::post('turnos',[JuegosController::class,'turnos']);
 
 
 Route::post('guardarestadisticas',[EstadisticasController::class,'store']);
 Route::post('registrobatalla/{id}',[EstadisticasController::class,'registrobatallas']);
+
+
+
+
 
 
 

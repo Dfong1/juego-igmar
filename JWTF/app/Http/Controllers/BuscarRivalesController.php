@@ -27,7 +27,6 @@ class BuscarRivalesController extends Controller
         $matchplayer->save();
         event(new MatchPlayers($player));
         return response()->json($player);
-
     }
 
     public function update()

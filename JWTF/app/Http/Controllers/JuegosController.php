@@ -17,8 +17,7 @@ public function storecoordenates(Request $request)
 {
     $user = auth()->user();
     $rival_id = $request->rival_id;
-    $barcotumado = $request->barcotumado;
-    $barcorivaltumado = $request->barcorivaltumado;
+  
 
     $barco = new Barco();
     $coordenates = $request->coordenates;
@@ -30,16 +29,8 @@ public function storecoordenates(Request $request)
         $barco->rival_barcos = 15;
         $barco->coordenate_user = json_encode($coordenate);
         $barco->coordenate_rival = json_encode($coordenate);
-
-        if ($coordenate === $barcotumado) {
-            $barco->user_barcos -= 1;
-        } elseif ($coordenate === $barcorivaltumado) {
-            $barco->rival_barcos -= 1;
-        }
-
         $barco->save();
     }
-
     $response = [
         'success' => true,
         'message' => 'Coordenates stored successfully',
@@ -47,6 +38,31 @@ public function storecoordenates(Request $request)
     ];
 
     return response()->json($response);
+}
+
+
+
+public function bombardear($id, $barcotumbado, $latitud, $longitud)
+{
+    $barco = Barco::find($id);
+
+    if ($barcotumbado) {
+        $coordenateToFind = json_encode([$latitud, $longitud]);
+        if ($barco && in_array($coordenateToFind, json_decode($barco->coordenate_user, true))) {
+            $barco->user_barcos -= 1;
+            $barco->coordenate_user = json_encode(array_values(array_diff(json_decode($barco->coordenate_user, true), [$coordenateToFind])));
+        }
+    } else {
+        $coordenateToFind = json_encode([$latitud, $longitud]);
+        if ($barco && in_array($coordenateToFind, json_decode($barco->coordenate_rival, true))) {
+            $barco->rival_barcos -= 1;
+            $barco->coordenate_rival = json_encode(array_values(array_diff(json_decode($barco->coordenate_rival, true), [$coordenateToFind])));
+        }
+    }
+
+    $barco->save();
+
+    return response()->json(['message' => 'Bombardeo realizado con éxito']);
 }
 
 
