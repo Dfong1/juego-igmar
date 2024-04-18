@@ -73,7 +73,10 @@ Route::group([
     Route::post('/postear',[BuscarRivalesController::class,'post']);
     Route::post('/updatear',[BuscarRivalesController::class,'update']);
     Route::get('me', 'App\Http\Controllers\AuthController@me');
-
+    
+    Route::get('registrobatalla/{id}',[EstadisticasController::class,'registrobatallas']);
+    Route::get('movimiento/{id}',[JuegosController::class,'hacerMovimiento']);
+    Route::post('/buscar/partida', [BuscarRivalesController:: class, 'joinQueue']);
 });
 
 
@@ -82,7 +85,6 @@ Route::post('turnos',[JuegosController::class,'turnos']);
 
 
 Route::post('guardarestadisticas',[EstadisticasController::class,'store']);
-Route::post('registrobatalla/{id}',[EstadisticasController::class,'registrobatallas']);
 
 
 

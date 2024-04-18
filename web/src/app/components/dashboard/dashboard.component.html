@@ -9,7 +9,7 @@
     <app-navbar [titulo]="'Dashboard'" ></app-navbar>
 
     <div class="container">
-        <h1>Bienvenido usuario</h1>
+        <h1>Bienvenido {{ user.name }}</h1>
         <div class="carta">
             <div class="juego">
                 <button class="jugar btn" routerLink="/search">Jugar</button>

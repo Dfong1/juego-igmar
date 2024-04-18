@@ -2,10 +2,10 @@
     display: flex;
     border: 1px solid black;
     border-radius: 5px;
-    margin-top: 15px;
-    margin-bottom: 15px;
     width: 50%;
     margin: auto;
+    margin-top: 15px;
+    margin-bottom: 15px;
     justify-content: space-around;
 }
 

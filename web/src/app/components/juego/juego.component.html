@@ -49,8 +49,8 @@
     </div>
 
     <div class="board">
-        <div *ngFor="let row of board" class="row">
-          <div *ngFor="let cell of row" class="cell" [style.background-color]="cell || 'white'">
+        <div *ngFor="let row of board; let rowIndex = index" class="row">
+          <div *ngFor="let cell of row; let colIndex = index" class="cell" [style.background-color]="cell || 'white'" (click)="sendBoardPosition(rowIndex, colIndex)">
           </div>
         </div>
       </div>

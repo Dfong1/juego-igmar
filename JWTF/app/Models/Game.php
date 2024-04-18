@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MatchPlayer extends Model
+class Game extends Model
 {
     use HasFactory;
-    protected $table = 'buscarrivales';
 
-    protected $fillable=[
-        'user_id'
+    protected $fillable = [
+        'status',
+        'ganador_id',
+        'jugador_id',
+        
     ];
 }

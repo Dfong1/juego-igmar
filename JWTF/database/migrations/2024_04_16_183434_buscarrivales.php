@@ -16,12 +16,6 @@ return new class extends Migration
         schema::create('buscarrivales',function(Blueprint $table){
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users');
-
-            $table->unsignedBigInteger('rival_id')->nullable();
-
-            $table->foreign('rival_id')->references('id')->on('users');
-
-
             $table->timestamps();
         });
     }

@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
+(window as any).Pusher = Pusher
+
 
 @Component({
   selector: 'app-juego',
@@ -14,14 +18,35 @@ export class JuegoComponent implements OnInit {
 
   board: string[][] = [];
 
-  constructor() { }
 
+
+  constructor() { }
+  
+  public echo: Echo = new Echo({
+    broadcaster:'pusher',
+    key:'123',
+    cluster:'mt1',
+    wsHost:'localhost',
+    wsPort:6001,
+    forceTLS:false,
+    disableStatus:true,
+  })
   ngOnInit(): void {
+    // this.echo.channel('game-events')
+    // .listen('TurnChanged', (event: any) => {
+    //   // Manejar el evento de cambio de turno
+    //   console.log('Turno cambiado:', event);
+    // })
+    // .listen('GameUpdated', (event: any) => {
+    //   // Manejar el evento de actualización del juego (por ejemplo, actualización del tablero)
+    //   console.log('Juego actualizado:', event);
+    // })
     this.generateBoard();
   }
   trackByIndex(index: number, item: any): number {
     return index;
   }
+
 
     
   generateBoard(): void {
@@ -57,4 +82,21 @@ export class JuegoComponent implements OnInit {
 
     return positions;
   }
+
+  sendBoardPosition(row: number, col: number) {
+    const position = { row, col };
+    console.log(position)
+    // this.http.post('http://tu-api.com/game/' + gameId + '/make-move', position)
+    //   .subscribe(
+    //     (response) => {
+    //       console.log('Respuesta del servidor:', response);
+    //       // Manejar la respuesta del servidor si es necesario
+    //     },
+    //     (error) => {
+    //       console.error('Error al enviar la posición del tablero:', error);
+    //       // Manejar el error si es necesario
+    //     }
+    //   );
+  }
+
 }

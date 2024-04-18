@@ -15,13 +15,13 @@ return new class extends Migration
     {
         Schema::create('barcos', function (Blueprint $table){
             $table->id();
-            $table->foreignId('user_id')->references('id')->on('users');
-            $table->integer('user_barcos');
-            $table->foreignId('rival_id')->references('id')->on('users');
-            $table->integer('rival_barcos');
+            $table->unsignedBigInteger('game_id');
+            $table->unsignedBigInteger('user_id');
+            $table->integer('horizontal');
+            $table->integer('vertical');
 
-            $table->text('coordenate_user');
-            $table->text('coordenate_rival');
+            $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->timestamps();
             
