@@ -35,6 +35,8 @@ use App\Http\Controllers\IngresoReparacionesController;
 use App\Http\Controllers\LogHistoryController;
 use App\Http\Controllers\ReportesController;
 use App\Http\Controllers\BuscarRivalesController;
+use App\Http\Controllers\EstadisticasController;
+
 
 
 Route::group([
@@ -73,8 +75,17 @@ Route::group([
     Route::get('me', 'App\Http\Controllers\AuthController@me');
 
 });
+
+
 Route::post('coordinates',[JuegosController::class,'storecoordenates']);
 Route::post('turnos',[JuegosController::class,'turnos']);
+
+
+Route::post('guardarestadisticas',[EstadisticasController::class,'store']);
+Route::post('registrobatalla/{id}',[EstadisticasController::class,'registrobatallas']);
+
+
+
 
 
 

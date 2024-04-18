@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Estadistica;
+use App\Models\User;
 
 class EstadisticasController extends Controller
 {
@@ -19,22 +20,30 @@ class EstadisticasController extends Controller
         ];
     }
 
-public function store(Request $request)
-{
-    $data = $request->all();
 
-    
-    $user_id = $data['ganador'] == 'user_id' ? $data['ganador'] : null;
-    $rival_id = $data['ganador'] == 'rival_id' ? $data['ganador'] : null;
-    $partida = $data['ganador'] == 'user_id' ? 1 : 0;
 
+    public function store(Request $request)
+    {
+        $data = $request->all();
     
-    Estadistica::create([
-        'user_id' => $user_id,
-        'rival_id' => $rival_id,
-        'partida' => $partida
-    ]); 
-}
+        $user_id = $data['user_id'];
+        $rival_id = $data['rival_id'];
+        $partida = $data['ganador'] == 1 ? 1 : 0;
+    
+        Estadistica::create([
+            'user_id' => $user_id,
+            'rival_id' => $rival_id,
+            'partida' => $partida
+        ]); 
+        Estadistica::create([
+            'user_id' => $rival_id,
+            'rival_id' => $user_id,
+            'partida' => !$partida
+        ]); 
+
+
+
+    }
 
 
 
@@ -46,7 +55,12 @@ public function registrobatallas($id)
         ->select('estadisticas.*', 'users.name as rival_name')
         ->get();
 
-    return $registros;
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json(["error" => "Usuario no encontrado"], 404);
+        }
+
+    return response()->json(["msg"=>"Registro de batallas encontradas","data"=>$registros],200);
 }
 
 

@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Estadistica extends Model
 {
     use HasFactory;
-    protected $table = 'barcos';
+
+    protected $table = 'estadisticas';
+    public $timestamps = false;
 
     protected $fillable=[
         'user_id',
