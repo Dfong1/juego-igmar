@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\ActualizaJuego;
 use App\Events\CambiarTurno;
+use App\Events\BarcoEvents;
 use App\Models\Estadistica;
 use App\Models\Game;
 use Illuminate\Http\Request;
@@ -84,6 +85,7 @@ public function hacerMovimiento(Request $request, $gameId)
             $game->status = 'terminado';
             $game->winner_id = $winnerId;
             $game->save();
+
             return response()->json(['message' => '¡Felicidades! Has ganado']);
         }
 
@@ -96,7 +98,6 @@ public function hacerMovimiento(Request $request, $gameId)
 
         // Emitir evento de actualización del juego
         broadcast(new ActualizaJuego($game));
-
         return response()->json(['message' => 'Movimiento hecho con éxito', 'is_successful' => $isSuccessful]);
     } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage()], 500);
@@ -148,9 +149,12 @@ private function checkIfSuccessfulAttack($gameId, $x, $y, $user_id): bool {
     if($movimiento){
         // Eliminar el movimiento
         $movimiento->delete();
+       event(new BarcoEvents($movimiento)); 
 
         return true;
     }
+
+    event(new BarcoEvents($movimiento)); 
 
     return false;
 }

@@ -21,10 +21,11 @@ class MatchPlayers
      * 
      * 
      */
-     public $player;
-    public function __construct($player)
+    public $gameId;
+
+    public function __construct($gameId)
     {
-        $this->player = $player;
+        $this->gameId = $gameId;
     }
 
     /**

@@ -88,6 +88,7 @@ Route::group([
         Route::post('get-game', [JuegosController::class, 'obtenerJuegoActual']);
 
         // Otros endpoints del juego...
+        Route::get('getBarcosCount',[BarcosController::class,'getBarcosCount'])->middleware('auth:api');
     });
 });
 
@@ -98,7 +99,6 @@ Route::post('turnos',[JuegosController::class,'turnos']);
 
 Route::post('guardarestadisticas',[EstadisticasController::class,'store']);
 
-Route::get('getBarcosCount',[BarcosController::class,'getBarcosCount'])->middleware('auth:api');
 
 
 

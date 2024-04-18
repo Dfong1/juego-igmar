@@ -1,7 +1,11 @@
+.tableros {
+  display: flex;
+}
+
 .board {
     display: flex;
     flex-direction: column;
-    width: 50%;
+    width: 40%;
     height: 80vh;
     margin: auto;
     margin-top: 50px;

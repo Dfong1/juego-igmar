@@ -29,14 +29,17 @@ export class SearchingComponent implements OnInit {
   })
 
   websocket() {
-    this.echo.channel('evento-juego').listen('.App\\Events\\CrearJuego', (event: any) => {
-      console.log('Juego creado:', event);
-      // this.ngZone.run(() => {
-      //   this.router.navigate(['/juego']); // Redirigir al usuario a la página '/juego' dentro de la zona de Angular
-      // });
+    this.echo.channel('matchplayer').listen('.App\\Events\\MatchPlayers', (event: any) => {
+      console.log('Jugadores emparejados en la partida:', event);
+      // Redirige a la pantalla del juego
+      console.log(event)
+
+      this.ngZone.run(() => {
+        this.router.navigate(['/juego'], { queryParams: { gameId: event.gameId } });
+      });
     });
-    console.log(this.echo)
-    this.echo.connect()
+
+    this.echo.connect();
   }
 
 

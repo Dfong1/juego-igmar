@@ -48,11 +48,20 @@
         </div>
     </div>
 
-    <div class="board">
-        <div *ngFor="let row of board; let rowIndex = index" class="row">
-          <div *ngFor="let cell of row; let colIndex = index" class="cell" [style.background-color]="cell || 'white'" (click)="sendBoardPosition(rowIndex, colIndex)">
+    <div class="tableros">
+        <div class="board">
+            <div *ngFor="let row of board; let rowIndex = index" class="row">
+              <div *ngFor="let cell of row; let colIndex = index" class="cell" [style.background-color]="cell || 'white'">
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+    
+          <div class="board">
+            <div *ngFor="let row of oponentBoard; let rowIndex = index" class="row" >
+                <div *ngFor="let cell of row; let colIndex = index" class="cell" [style.background-color]="cell || 'white'" (click)="sendBoardPosition(rowIndex, colIndex)">
+                </div>
+            </div>
+          </div>
+    </div>
 </body>
 </html>

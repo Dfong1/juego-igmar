@@ -16,7 +16,7 @@ export class JuegoService {
   private buscarPartidaURL = `${api}/api/user/buscar/partida`
   private mandarMisilURL = `${api}/api/user/juego/`
   private colocarBarcosURL = `${api}/api/user/juego/`
-  private $getbarcos = `${api}/api/getBarcosCount`
+  private getbarcosURL = `${api}/api/user/getBarcosCount`
 
   getPartida(): Observable<JuegoActivo> {
     return this.http.post<JuegoActivo>(this.getPartidaURL, {})
@@ -27,15 +27,15 @@ export class JuegoService {
   }
 
   colocarBarcos(barcos: [], id: Number) {
-    return this.http.post(this.colocarBarcosURL + id + '/colocar-barcos', {barcos})
+    return this.http.post(this.colocarBarcosURL + id + '/colocar-barcos', {ship_positions: barcos})
   }
 
   movimiento(horizontal: Number, vertical: Number, id: Number): Observable<Movimientos> {
-    return this.http.post<Movimientos>(this.mandarMisilURL + id + 'hacer-movimiento', {horizontal, vertical});
+    return this.http.post<Movimientos>(this.mandarMisilURL + id + '/hacer-movimiento', {horizontal, vertical});
   }
 
   getbarcos(){
-    return this.http.get(this.$getbarcos);
+    return this.http.get(this.getbarcosURL);
   }
 
 }
