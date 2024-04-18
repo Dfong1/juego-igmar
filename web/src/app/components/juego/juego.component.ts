@@ -50,8 +50,8 @@ export class JuegoComponent implements OnInit {
 
     
   generateBoard(): void {
-    const numRows = 8;
     const numCols = 5;
+    const numRows = 8;
     const greenCells = 15; // Número de celdas que deben estar en verde
 
     // Inicializar el tablero con todas las celdas en azul
@@ -62,41 +62,33 @@ export class JuegoComponent implements OnInit {
     const positions = this.generateRandomPositions(numRows, numCols, greenCells);
 
     positions.forEach(pos => {
-      this.board[pos.row][pos.col] = '#C7C8C8';
+      this.board[pos.vertical][pos.horizontal] = '#C7C8C8';
     });
   }
 
-  generateRandomPositions(numRows: number, numCols: number, count: number): { row: number, col: number }[] {
-    const positions: { row: number, col: number }[] = [];
+  generateRandomPositions(numRows: number, numCols: number, count: number): { vertical: number, horizontal: number }[] {
+    const positions: { vertical: number, horizontal: number }[] = [];
     const totalCells = numRows * numCols;
 
     // Generar un conjunto único de posiciones aleatorias
     while (positions.length < count) {
       const randomIndex = Math.floor(Math.random() * totalCells);
-      const row = Math.floor(randomIndex / numCols);
-      const col = randomIndex % numCols;
-      if (!positions.some(pos => pos.row === row && pos.col === col)) {
-        positions.push({ row, col });
+      const vertical = Math.floor(randomIndex / numCols);
+      const horizontal = randomIndex % numCols;
+      if (!positions.some(pos => pos.vertical === vertical && pos.horizontal === horizontal)) {
+        positions.push({ vertical, horizontal });
       }
     }
+
+    console.log(positions)
 
     return positions;
   }
 
-  sendBoardPosition(row: number, col: number) {
-    const position = { row, col };
+  sendBoardPosition(vertical: number, horizontal: number) {
+    const position = { vertical, horizontal };
     console.log(position)
-    // this.http.post('http://tu-api.com/game/' + gameId + '/make-move', position)
-    //   .subscribe(
-    //     (response) => {
-    //       console.log('Respuesta del servidor:', response);
-    //       // Manejar la respuesta del servidor si es necesario
-    //     },
-    //     (error) => {
-    //       console.error('Error al enviar la posición del tablero:', error);
-    //       // Manejar el error si es necesario
-    //     }
-    //   );
+    
   }
 
 }

@@ -94,7 +94,7 @@ class BuscarRivalesController extends Controller
                 MatchPlayer::whereIn('user_id', $playerIds)->delete();
     
                 // Emitir evento de partida creada y notificar a los jugadores emparejados
-                broadcast(new CrearJuego($game));
+                event(new MatchPlayers($game));
             }
     
             // Verificar si se creó una partida
