@@ -8,7 +8,9 @@
 <body>
 
     <div class="super-contenedor">
-
+        <div class="alert alert-success mt-2" *ngIf="message" style="width: 50%; margin: auto;">
+            {{ message }}
+        </div>
         <div class="contenedor" >
             <h1>Verifica que eres tu</h1>
             <div class="text">
@@ -16,15 +18,13 @@
             </div>
             <form >
                 <input type="text" placeholder="Ingrese el código: ######" name="codigo" id="codigo" class="form-control" [(ngModel)]="codigo">
-                <!-- <div class="alert alert-warning mt-2" *ngIf="message" style="width: 50%; margin: auto;">
-                    {{ message }}
-                </div> -->
+                <div class="alert alert-warning mt-2" *ngIf="errorMsg" style="width: 50%; margin: auto;">
+                    {{ errorMsg }}
+                </div>
                 <button type="submit" class="btn btn-primary" (click)="verificar()" >Verificar</button>
             </form>
         </div>
     </div>
-
-    {{codigo | json}}
 
 </body>
 </html>

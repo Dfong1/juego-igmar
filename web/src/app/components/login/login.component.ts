@@ -50,7 +50,7 @@ export class LoginComponent {
         localStorage.setItem('token', response.token)
         setTimeout(() => {
           this.route.navigate(['/verificar-codigo'])
-        })
+        }, 2000)
       }, (error) => {
         this.msg.msg = ""
         this.errorMsg = error.error

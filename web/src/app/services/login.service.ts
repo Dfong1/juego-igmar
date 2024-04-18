@@ -42,14 +42,14 @@ export class LoginService {
     return this.http.post<Message>(this.loginURL, { email: email, password: password })
   }
 
-  Verificar(): Observable<any> {
-    let url = `${api}/api/auth/me`
-    return this.http.post<any>(url, null)
+  verificarAutenticacion(): Observable<any> {
+    let url = `${api}/api/user/me`
+    return this.http.get<any>(url)
   }
   
-  verificarToken(token: string): Observable<any> {
-    const url = `${api}/api/auth/verify`;
-    return this.http.post<any>(url, { token });
+  verificarLogin(): Observable<any> {
+    let url = `${api}/api/auth/verificarlogin`
+    return this.http.post<any>(url, {})
   }
   
 
