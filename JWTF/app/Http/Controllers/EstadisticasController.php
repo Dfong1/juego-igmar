@@ -51,6 +51,7 @@ class EstadisticasController extends Controller
 public function registrobatallas($id)
 {
     $registros = Estadistica::where('user_id', $id)
+        ->orWhere('rival_id', $id)
         ->join('users', 'users.id', '=', 'estadisticas.rival_id')
         ->select('estadisticas.*', 'users.name as rival_name')
         ->get();

@@ -11,9 +11,9 @@ class Barco extends Model
     protected $table = 'barcos';
 
     protected $fillable=[
+        'game_id',
         'user_id',
-        'user_barcos',
-        'rival_id',
-        'rival_barcos,'
+        'horizontal',
+        'vertical'
     ];
 }

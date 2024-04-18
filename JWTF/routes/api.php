@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\BarcosController;
 use App\Http\Controllers\JuegosController;
 use App\Mail\ValidatorEmail;
 use Illuminate\Http\Request;
@@ -77,6 +78,17 @@ Route::group([
     Route::get('registrobatalla/{id}',[EstadisticasController::class,'registrobatallas']);
     Route::get('movimiento/{id}',[JuegosController::class,'hacerMovimiento']);
     Route::post('/buscar/partida', [BuscarRivalesController:: class, 'joinQueue']);
+
+    Route::group(['prefix' => 'juego'], function () {
+        // Endpoint para colocar los barcos
+        Route::post('{gameId}/colocar-barcos', [BarcosController::class,'colocarBarcos']);
+
+        // Endpoint para realizar un movimiento
+        Route::post('{gameId}/hacer-movimiento', [JuegosController::class, 'hacerMovimiento']);
+        Route::post('get-game', [JuegosController::class, 'obtenerJuegoActual']);
+
+        // Otros endpoints del juego...
+    });
 });
 
 

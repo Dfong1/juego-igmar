@@ -21,6 +21,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array<int, string>
      */
     protected $fillable = [
+        'id',
         'name',
         'email',
         'password',
@@ -60,5 +61,9 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    public function games()
+    {
+        return $this->hasMany(Game::class, 'player1_id', 'id')->orWhere('player2_id', $this->id);
+    }
   
 }

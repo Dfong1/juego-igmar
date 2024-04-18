@@ -48,24 +48,47 @@ class BuscarRivalesController extends Controller
     public function joinQueue(Request $request)
     {
         try {
-            // Verificar si el usuario ya está en la cola de búsqueda
+            // Verificar si el usuario ya está en un juego activo
             $userId = Auth::id();
+            $existingGame = Game::where('status', 'activo')
+                                ->where(function ($query) use ($userId) {
+                                    $query->where('player1_id', $userId)
+                                          ->orWhere('player2_id', $userId);
+                                })
+                                ->first();
+    
+            if ($existingGame) {
+                return response()->json(['message' => 'Usuario ya está en un juego activo'], 400);
+            }
+    
+            // Verificar si el usuario ya está en la cola de búsqueda
             $existingQueue = MatchPlayer::where('user_id', $userId)->first();
     
             if ($existingQueue) {
-                return response()->json(['message' => 'Already in matchmaking queue']);
+                return response()->json(['message' => 'El jugador ya está buscando partida']);
             }
     
             // Agregar al usuario a la cola de búsqueda
-            MatchPlayer::create(['user_id' => $userId]);
+            $player = new MatchPlayer();
+            $player->user_id = $userId;
+            $player->save();
+    
+            // Inicializar $game
+            $game = null;
     
             // Verificar si hay suficientes jugadores en la cola para emparejar
             $usersInQueue = MatchPlayer::count();
     
             if ($usersInQueue >= 2) {
-                // Emparejar jugadores y crear una nueva partida
-                $playerIds = MatchPlayer::inRandomOrder()->take(2)->pluck('user_id');
-                $game = Game::create(['player1_id' => $playerIds[0], 'player2_id' => $playerIds[1]]);
+                // Obtener los jugadores emparejados en el orden en que se unieron
+                $playerIds = MatchPlayer::orderBy('created_at')->take(2)->pluck('user_id');
+                
+                // Crear una nueva partida
+                $game = Game::create([
+                    'player1_id' => $playerIds[0],
+                    'player2_id' => $playerIds[1],
+                    'next_player_id' => $playerIds[1] // El primer turno es del player2
+                ]);
     
                 // Eliminar a los jugadores emparejados de la cola de búsqueda
                 MatchPlayer::whereIn('user_id', $playerIds)->delete();
@@ -74,11 +97,17 @@ class BuscarRivalesController extends Controller
                 broadcast(new CrearJuego($game));
             }
     
-            return response()->json(['message' => 'Joined matchmaking queue']);
+            // Verificar si se creó una partida
+            if ($game) {
+                return response()->json(['message' => 'Buscando partida', 'game' => $game]);
+            } else {
+                return response()->json(['message' => 'Buscando partida']);
+            }
         } catch (\Exception $e) {
-    
-            return response()->json(['error' => 'An error occurred while joining matchmaking queue'], 500);
+            return response()->json(['error' => 'Ha ocurrido un error al buscar partida'], 500);
         }
     }
+
+
     
 }

@@ -15,13 +15,11 @@ return new class extends Migration
     {
         Schema::create('barcos', function (Blueprint $table){
             $table->id();
-            $table->unsignedBigInteger('game_id');
-            $table->unsignedBigInteger('user_id');
+            $table->foreignId('game_id')->references('id')->on('games');
+            $table->foreignId('user_id')->references('id')->on('users');
             $table->integer('horizontal');
             $table->integer('vertical');
 
-            $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->timestamps();
             
