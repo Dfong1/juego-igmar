@@ -87,27 +87,28 @@ class BuscarRivalesController extends Controller
                 $game = Game::create([
                     'player1_id' => $playerIds[0],
                     'player2_id' => $playerIds[1],
-                    'next_player_id' => $playerIds[1] // El primer turno es del player2
+                    'next_player_id' => $playerIds[1]
                 ]);
-    
+
+                
                 // Eliminar a los jugadores emparejados de la cola de búsqueda
                 MatchPlayer::whereIn('user_id', $playerIds)->delete();
-    
-                // Emitir evento de partida creada y notificar a los jugadores emparejados
-                event(new MatchPlayers($game->id));
-            }
-    
-            // Verificar si se creó una partida
-            if ($game) {
-                event(new MatchPlayers($game->id));
+                
+                event(new MatchPlayers($game));
                 return response()->json(['message' => 'Buscando partida', 'game' => $game]);
             } else {
-                event(new MatchPlayers($game->id));
                 return response()->json(['message' => 'Buscando partida']);
             }
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ha ocurrido un error al buscar partida'], 500);
         }
+    }
+
+    public function getQueue() {
+        $user = auth()->user();
+        $jugador = MatchPlayer::where('user_id', $user->id);
+
+        event(new MatchPlayers($jugador));
     }
 
 

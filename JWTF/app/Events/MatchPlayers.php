@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class MatchPlayers
+class MatchPlayers implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -21,11 +21,11 @@ class MatchPlayers
      * 
      * 
      */
-    public $gameId;
+    public $game;
 
-    public function __construct($gameId)
+    public function __construct($game)
     {
-        $this->gameId = $gameId;
+        $this->game = $game;
     }
 
     /**

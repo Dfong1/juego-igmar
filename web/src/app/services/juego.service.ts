@@ -17,10 +17,16 @@ export class JuegoService {
   private mandarMisilURL = `${api}/api/user/juego/`
   private colocarBarcosURL = `${api}/api/user/juego/`
   private getbarcosURL = `${api}/api/user/getBarcosCount`
+  private getQueueURL = `${api}/api/user/get-queue`
 
   getPartida(): Observable<JuegoActivo> {
     return this.http.post<JuegoActivo>(this.getPartidaURL, {})
   }
+
+  getQueue() {
+    return this.http.get(this.getQueueURL)
+  }
+
 
   buscarPartida(): Observable<JuegoActivo>{
     return this.http.post<JuegoActivo>(this.buscarPartidaURL, {})
