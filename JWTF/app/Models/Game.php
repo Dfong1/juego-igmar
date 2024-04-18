@@ -10,9 +10,11 @@ class Game extends Model
     use HasFactory;
 
     protected $fillable = [
+        'id',
         'status',
-        'ganador_id',
-        'jugador_id',
-        
+        'player1_id',
+        'player2_id',
+        'winner_id',
+        'next_player_id'
     ];
 }
