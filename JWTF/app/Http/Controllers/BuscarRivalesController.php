@@ -48,7 +48,7 @@ class BuscarRivalesController extends Controller
     public function joinQueue(Request $request)
     {
         try {
-            // Verificar si el usuario ya está en la cola de búsqueda
+           
             $userId = Auth::id();
             $existingQueue = MatchPlayer::where('user_id', $userId)->first();
     
@@ -56,21 +56,17 @@ class BuscarRivalesController extends Controller
                 return response()->json(['message' => 'Already in matchmaking queue']);
             }
     
-            // Agregar al usuario a la cola de búsqueda
             MatchPlayer::create(['user_id' => $userId]);
     
-            // Verificar si hay suficientes jugadores en la cola para emparejar
+          
             $usersInQueue = MatchPlayer::count();
     
             if ($usersInQueue >= 2) {
-                // Emparejar jugadores y crear una nueva partida
                 $playerIds = MatchPlayer::inRandomOrder()->take(2)->pluck('user_id');
                 $game = Game::create(['player1_id' => $playerIds[0], 'player2_id' => $playerIds[1]]);
-    
-                // Eliminar a los jugadores emparejados de la cola de búsqueda
+  
                 MatchPlayer::whereIn('user_id', $playerIds)->delete();
     
-                // Emitir evento de partida creada y notificar a los jugadores emparejados
                 broadcast(new CrearJuego($game));
             }
     

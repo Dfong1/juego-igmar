@@ -40,9 +40,6 @@ class EstadisticasController extends Controller
             'rival_id' => $user_id,
             'partida' => !$partida
         ]); 
-
-
-
     }
 
 

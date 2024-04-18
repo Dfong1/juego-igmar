@@ -25,4 +25,9 @@ class NuevaReparacion implements ShouldBroadcast
     {
         return new Channel('nuevareparacion');
     }
+
+
+
 }
+
+

@@ -36,45 +36,25 @@ public function descontarbarcos($id)
 public function hacerMovimiento(Request $request, $gameId)
 {
     try {
-        // Validar la solicitud
         $this->validate($request, [
             'horizontal' => 'required|integer',
             'vertical' => 'required|integer',
         ]);
-
-        // Obtener el juego
         $game = Game::findOrFail($gameId);
-
-        // Verificar si es el turno del usuario actual
         $currentUser = Auth::user();
         if ($game->active_player_id !== $currentUser->id) {
             return response()->json(['error' => 'No es tu turno >:('], 403);
         }
-
-        // Obtener las coordenadas del movimiento desde la solicitud
         $x = $request->horizontal;
         $y = $request->vertical;
-
-        // Verificar si las coordenadas están dentro del rango del tablero
         if ($x < 0 || $x >= count($game->board) || $y < 0 || $y >= count($game->board[0])) {
             return response()->json(['error' => 'Coordenadas no validas'], 400);
         }
-
-        // Realizar el ataque y actualizar el estado del tablero
-        // Supongamos que aquí implementas la lógica para determinar si el ataque fue exitoso o no
         $isSuccessful = $game->ship_positions()->where('x', $x)->where('y', $y)->exists();
         $game->board[$x][$y] = $isSuccessful ? 1 : 2;
-
-        // Cambiar el turno al otro jugador
-        $game->active_player_id = $game->users->where('id', '!=', $currentUser->id)->first()->id;
-
-        // Guardar los cambios en la base de datos
+        $game->active_player_id = $game->users->where('id', '!=', $currentUser->id)->first()->id;    
         $game->save();
-
-        // Emitir evento de cambio de turno
         broadcast(new CambiarTurno($game));
-
-        // Emitir evento de actualización del juego
         broadcast(new ActualizaJuego($game));
 
         return response()->json(['message' => 'Movimiento hecho con satisfacción :)']);
@@ -82,8 +62,6 @@ public function hacerMovimiento(Request $request, $gameId)
         return response()->json(['error' => $e->getMessage()], 500);
     }
 }
-
-
 
 public function bombardear($id, $barcotumbado, $latitud, $longitud)
 {
@@ -112,22 +90,19 @@ public function bombardear($id, $barcotumbado, $latitud, $longitud)
 
 public function turnos(Request $request)
 {
-    $coordenates = $request->json()->all(); 
+      $coordenates = $request->json()->all(); 
       $user = auth()->user();
     $barco = Barco::where($user)->latest()->first(); 
-
     $coordenatesJson = json_encode($coordenates);
-
     if ($barco && $coordenatesJson === $barco->coordenate_user) {
-        $coordenatesArray = json_decode($coordenatesJson, true);
-        
+        $coordenatesArray = json_decode($coordenatesJson, true);    
         foreach ($coordenatesArray as $coordenate) {
             $coordenateToFind = json_encode($coordenate);
             if (in_array($coordenateToFind, $barco->user_barcos)) {
                 $barco->user_barcos = array_values(array_diff($barco->user_barcos, [$coordenateToFind])); 
                 $barco->save();
                 break; 
-            }
+    }
         }
         $turno = true; 
     } else {

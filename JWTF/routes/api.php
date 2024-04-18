@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\BarcosController;
 use App\Http\Controllers\JuegosController;
 use App\Mail\ValidatorEmail;
 use Illuminate\Http\Request;
@@ -85,6 +86,8 @@ Route::post('turnos',[JuegosController::class,'turnos']);
 
 
 Route::post('guardarestadisticas',[EstadisticasController::class,'store']);
+
+Route::post('getBarcosCount',[BarcosController::class,'getBarcosCount']);
 
 
 
