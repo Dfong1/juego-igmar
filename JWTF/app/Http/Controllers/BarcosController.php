@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\BarcoEvents;
 use App\Models\Barco;
 use App\Models\Game;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class BarcosController extends Controller
 {
@@ -65,14 +67,20 @@ class BarcosController extends Controller
 
     public function getBarcosCount()
     {
-        $userId = auth()->id();
+        $userId = auth()->user()->id;
     
         $userBarcosCount = Barco::where('user_id', $userId)->count();
     
         $game = Game::where('player1_id', $userId)->where('status', 'activo')->orWhere('player2_id', $userId)->where('status', 'activo')->first();
+        Log::info($game);
         $rivalId = $userId == $game->player1_id ? $game->player2_id : $game->player1_id;
         $rivalBarcosCount = Barco::where('user_id', $rivalId)->count();
-    
+
+        $barcos = ['user_barcos_count' => $userBarcosCount,
+        'rival_barcos_count' => $rivalBarcosCount];
+
+       
+       event(new BarcoEvents($barcos)); 
         return response()->json([
             'user_barcos_count' => $userBarcosCount,
             'rival_barcos_count' => $rivalBarcosCount

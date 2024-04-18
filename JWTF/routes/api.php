@@ -98,7 +98,7 @@ Route::post('turnos',[JuegosController::class,'turnos']);
 
 Route::post('guardarestadisticas',[EstadisticasController::class,'store']);
 
-Route::post('getBarcosCount',[BarcosController::class,'getBarcosCount']);
+Route::get('getBarcosCount',[BarcosController::class,'getBarcosCount'])->middleware('auth:api');
 
 
 

@@ -3,7 +3,8 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
-(window as any).Pusher = Pusher
+import { JuegoService } from '../../services/juego.service';
+
 
 
 @Component({
@@ -18,19 +19,16 @@ export class JuegoComponent implements OnInit {
 
   board: string[][] = [];
 
+  echo:any
 
-
-  constructor() { }
+  constructor(private service:JuegoService) { }
   
-  public echo: Echo = new Echo({
-    broadcaster:'pusher',
-    key:'123',
-    cluster:'mt1',
-    wsHost:'localhost',
-    wsPort:6001,
-    forceTLS:false,
-    disableStatus:true,
-  })
+
+
+
+  
+
+
   ngOnInit(): void {
     // this.echo.channel('game-events')
     // .listen('TurnChanged', (event: any) => {
@@ -42,19 +40,42 @@ export class JuegoComponent implements OnInit {
     //   console.log('Juego actualizado:', event);
     // })
     this.generateBoard();
+    this.service.getPartida().subscribe(
+      (response) => {
+        console.log(response); 
+      }
+    ); 
+    this.websocket();
+    
+    
   }
+
   trackByIndex(index: number, item: any): number {
     return index;
   }
 
-
-    
+ 
+  websocket(){
+    (window as any).Pusher = Pusher
+    this.echo = new Echo({
+      broadcaster:'pusher',
+      key:'123',
+      cluster:'mt1',
+      wsHost:'localhost',
+      wsPort:6001,
+      forceTLS:false,
+      disableStatus:true,
+    })
+    this.echo.channel('getbarcos').listen('.App\\Events\\BarcoEvents',(e:any) => {
+      console.log(e);
+    })
+  }
+     
   generateBoard(): void {
-    const numRows = 8;
     const numCols = 5;
-    const greenCells = 15; // Número de celdas que deben estar en verde
+    const numRows = 8;
+    const greenCells = 15; 
 
-    // Inicializar el tablero con todas las celdas en azul
     this.board = Array(numRows)
       .fill(null)
       .map(() => Array(numCols).fill('#13E5F7'));
@@ -62,41 +83,33 @@ export class JuegoComponent implements OnInit {
     const positions = this.generateRandomPositions(numRows, numCols, greenCells);
 
     positions.forEach(pos => {
-      this.board[pos.row][pos.col] = '#C7C8C8';
+      this.board[pos.vertical][pos.horizontal] = '#C7C8C8';
     });
   }
 
-  generateRandomPositions(numRows: number, numCols: number, count: number): { row: number, col: number }[] {
-    const positions: { row: number, col: number }[] = [];
+  generateRandomPositions(numRows: number, numCols: number, count: number): { vertical: number, horizontal: number }[] {
+    const positions: { vertical: number, horizontal: number }[] = [];
     const totalCells = numRows * numCols;
-
-    // Generar un conjunto único de posiciones aleatorias
     while (positions.length < count) {
       const randomIndex = Math.floor(Math.random() * totalCells);
-      const row = Math.floor(randomIndex / numCols);
-      const col = randomIndex % numCols;
-      if (!positions.some(pos => pos.row === row && pos.col === col)) {
-        positions.push({ row, col });
+      const vertical = Math.floor(randomIndex / numCols);
+      const horizontal = randomIndex % numCols;
+      if (!positions.some(pos => pos.vertical === vertical && pos.horizontal === horizontal)) {
+        positions.push({ vertical, horizontal });
       }
     }
+
+    console.log(positions)
 
     return positions;
   }
 
-  sendBoardPosition(row: number, col: number) {
-    const position = { row, col };
+  sendBoardPosition(vertical: number, horizontal: number) {
+    const position = { vertical, horizontal };
     console.log(position)
-    // this.http.post('http://tu-api.com/game/' + gameId + '/make-move', position)
-    //   .subscribe(
-    //     (response) => {
-    //       console.log('Respuesta del servidor:', response);
-    //       // Manejar la respuesta del servidor si es necesario
-    //     },
-    //     (error) => {
-    //       console.error('Error al enviar la posición del tablero:', error);
-    //       // Manejar el error si es necesario
-    //     }
-    //   );
+    
   }
+
+
 
 }
