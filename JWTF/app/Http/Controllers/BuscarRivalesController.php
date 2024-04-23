@@ -75,8 +75,7 @@ class BuscarRivalesController extends Controller
     
             // Inicializar $game
             $game = null;
-    
-          
+
             $usersInQueue = MatchPlayer::count();
     
             if ($usersInQueue >= 2) {

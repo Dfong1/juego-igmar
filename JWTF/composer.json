@@ -16,7 +16,7 @@
         "mongodb/mongodb": "^1.12",
         "php-open-source-saver/jwt-auth": "^2.1",
         "pusher/pusher-php-server": "^7.2",
-        "react/promise": "^2.7"
+        "react/promise": "3.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

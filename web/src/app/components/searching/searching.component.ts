@@ -43,10 +43,7 @@ export class SearchingComponent implements OnInit {
     this.js.buscarPartida().subscribe(
       (response) => {
         console.log(response); 
-        // No redirigir aquí, la redirección se manejará en el websocket()
-        this.ngZone.run(() => {
-          this.router.navigate(['/juego'] );
-        });
+        // No redirigir aquí, la redirección se manejará en el websocket
       }
     );
   }
