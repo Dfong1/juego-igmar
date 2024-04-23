@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { api } from '../Interfaces/enviroment';
+import { environment } from '../../environments/environment.prod';
 import { Message } from '../Interfaces/message';
 
 @Injectable({
@@ -9,8 +9,8 @@ import { Message } from '../Interfaces/message';
 })
 
 export class LoginService {
-  private loginURL = `${api}/api/auth/login`;
-  private codigoURL = `${api}/api/auth/verificar`
+  private loginURL = `${environment.api}/api/auth/login`;
+  private codigoURL = `${environment.api}/api/auth/verificar`
   private token: string|null = null;
   private static instance: LoginService
 
@@ -43,12 +43,12 @@ export class LoginService {
   }
 
   verificarAutenticacion(): Observable<any> {
-    let url = `${api}/api/user/me`
+    let url = `${environment.api}/api/user/me`
     return this.http.get<any>(url)
   }
   
   verificarLogin(): Observable<any> {
-    let url = `${api}/api/auth/verificarlogin`
+    let url = `${environment.api}/api/auth/verificarlogin`
     return this.http.post<any>(url, {})
   }
   

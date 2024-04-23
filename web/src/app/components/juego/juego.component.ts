@@ -5,8 +5,7 @@ import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 import { JuegoService } from '../../services/juego.service';
 import { JuegoActivo } from '../../Interfaces/juego-activo';
-
-
+(window as any).Pusher = Pusher
 
 @Component({
   selector: 'app-juego',
@@ -25,7 +24,7 @@ export class JuegoComponent implements OnInit {
     broadcaster:'pusher',
     key:'123',
     cluster:'mt1',
-    wsHost:'localhost',
+    wsHost:'127.0.0.1',
     wsPort:6001,
     forceTLS:false,
     disableStatus:true,
@@ -73,7 +72,6 @@ export class JuegoComponent implements OnInit {
         console.error('Error al obtener información del juego:', error);
       }
     );
-    this.websocket();
   }
 
   trackByIndex(index: number, item: any): number {
@@ -82,11 +80,11 @@ export class JuegoComponent implements OnInit {
 
  
   websocket(){
-    (window as any).Pusher = Pusher
-    this.echo.channel('Barcos').listen('BarcoEvents',(e:any) => {
+    this.echo.channel('Barcos').listen('.BarcosEvent',(e:any) => {
       console.log(e),
       console.log('ya jala');
     })
+    this.echo.connect()
   }
 
   generateBoard(): void {
@@ -132,6 +130,9 @@ export class JuegoComponent implements OnInit {
   sendBoardPosition(vertical: number, horizontal: number) {
     const position = { vertical, horizontal };
     console.log(position)
+    this.websocket()
+
+    console.log(this.juego.game.id)
 
     this.js.movimiento(horizontal, vertical, this.juego.game.id).subscribe(
       (response) => {

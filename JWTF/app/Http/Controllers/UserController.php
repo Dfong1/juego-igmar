@@ -28,7 +28,6 @@ class UserController extends Controller
             $request->all(),[
                 "name"=>"required|max:30",
                 "email"=>"required|unique:users|email",
-                "rol_id"=>"numeric|between:1,3",
                 "password"=>"required|min:8|string"
             ]
         );

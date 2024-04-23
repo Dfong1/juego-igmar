@@ -97,7 +97,7 @@ public function hacerMovimiento(Request $request, $gameId)
         $game->save();
 
         // Emitir evento de actualización del juego
-        broadcast(new ActualizaJuego($game));
+        event(new ActualizaJuego($game));
         return response()->json(['message' => 'Movimiento hecho con éxito', 'is_successful' => $isSuccessful]);
     } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage()], 500);
@@ -149,13 +149,10 @@ private function checkIfSuccessfulAttack($gameId, $x, $y, $user_id): bool {
     if($movimiento){
         // Eliminar el movimiento
         $movimiento->delete();
-       event(new BarcoEvents($movimiento)); 
-
+        
+        event(new BarcoEvents($movimiento)); 
         return true;
     }
-
-    event(new BarcoEvents($movimiento)); 
-
     return false;
 }
 

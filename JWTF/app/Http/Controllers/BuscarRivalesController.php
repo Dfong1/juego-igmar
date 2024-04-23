@@ -49,7 +49,7 @@ class BuscarRivalesController extends Controller
     {
         try {
             // Verificar si el usuario ya está en un juego activo
-            $userId = Auth::id();
+            $userId = auth()->user()->id;
             $existingGame = Game::where('status', 'activo')
                                 ->where(function ($query) use ($userId) {
                                     $query->where('player1_id', $userId)
@@ -93,10 +93,10 @@ class BuscarRivalesController extends Controller
                 // Eliminar a los jugadores emparejados de la cola de búsqueda
                 MatchPlayer::whereIn('user_id', $playerIds)->delete();
                 
-                event(new MatchPlayers($game));
-                return response()->json(['message' => 'Buscando partida', 'game' => $game]);
+                event(new MatchPlayers($userId));
+                // return response()->json(['message' => 'Buscando partida', 'game' => $game]);
             } else {
-                return response()->json(['message' => 'Buscando partida']);
+                return response()->json(['message' => 'Buscando partida', $userId]);
             }
         } catch (\Exception $e) {
             return response()->json(['error' => 'Ha ocurrido un error al buscar partida'], 500);

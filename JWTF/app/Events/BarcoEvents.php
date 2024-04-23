@@ -41,7 +41,7 @@ class BarcoEvents implements ShouldBroadcast
 
     public function broadcastAs()
     {
-    return new channel('Barcos');
+    return new channel('BarcoEvents');
     }
 
   
