@@ -44,18 +44,16 @@ export class SearchingComponent implements OnInit {
       (response) => {
         console.log(response); 
         // No redirigir aquí, la redirección se manejará en el websocket()
+        this.ngZone.run(() => {
+          this.router.navigate(['/juego'] );
+        });
       }
     );
   }
 
   websocket() {
     this.echo.channel('matchplayer').listen('MatchPlayers', (res: any) => {
-      console.log('Jugadores emparejados en la partida:', res);
-      
-      // Redirige a la pantalla del juego
-      this.ngZone.run(() => {
-        this.router.navigate(['/juego'] );
-      });
+      console.log('Jugadores emparejados en la partida:', res);  
     });
 
     this.echo.connect();

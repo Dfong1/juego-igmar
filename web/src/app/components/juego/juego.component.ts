@@ -59,9 +59,6 @@ export class JuegoComponent implements OnInit {
       (response) => {
         // Asignar el ID del juego
         this.juego.game.id = response.game.id;
-
-        
-        // Llamar al servicio para colocar los barcos
         this.js.colocarBarcos(savedPositions, this.juego.game.id).subscribe(
           (response) => {
             // Manejar la respuesta si es necesario
@@ -76,8 +73,6 @@ export class JuegoComponent implements OnInit {
         console.error('Error al obtener información del juego:', error);
       }
     );
-
-  
     this.websocket();
   }
 
@@ -88,8 +83,9 @@ export class JuegoComponent implements OnInit {
  
   websocket(){
     (window as any).Pusher = Pusher
-    this.echo.channel('getbarcos').listen('.App\\Events\\BarcoEvents',(e:any) => {
-      console.log(e);
+    this.echo.channel('Barcos').listen('BarcoEvents',(e:any) => {
+      console.log(e),
+      console.log('ya jala');
     })
   }
 

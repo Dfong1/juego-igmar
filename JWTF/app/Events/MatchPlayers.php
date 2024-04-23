@@ -37,4 +37,10 @@ class MatchPlayers implements ShouldBroadcast
     {
         return new Channel('matchplayer');
     }
+
+
+    public function broadcastAs()
+    {
+    return new channel('matchplayer');
+    }
 }

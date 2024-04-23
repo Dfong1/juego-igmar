@@ -80,7 +80,7 @@ class BarcosController extends Controller
         'rival_barcos_count' => $rivalBarcosCount];
 
        
-       event(new BarcoEvents($barcos)); 
+        event(new BarcoEvents($barcos)); 
         return response()->json([
             'user_barcos_count' => $userBarcosCount,
             'rival_barcos_count' => $rivalBarcosCount
