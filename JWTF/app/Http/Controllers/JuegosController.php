@@ -104,6 +104,28 @@ public function hacerMovimiento(Request $request, $gameId)
     }
 }
 
+private function checkIfSuccessfulAttack($gameId, $x, $y, $user_id): bool {
+    // Buscar el barco en las coordenadas especificadas
+    $movimiento = Barco::where('game_id', $gameId)
+                        ->where('horizontal', $x)
+                        ->where('vertical', $y)
+                        ->where('user_id', $user_id)
+                        ->first();
+
+    // Verificar si se encontró el barco
+    if($movimiento){
+        // Si se encontró el barco, eliminarlo
+        $movimiento->delete();
+        
+        // Emitir evento de eliminación del barco
+        event(new BarcoEvents($movimiento)); 
+        return true;
+    } else {
+        // Si no se encontró el barco, el ataque no fue exitoso
+        return false;
+    }
+}
+
 private function checkForWinner($gameId, $playerId)
 {
     // Obtener el juego y los jugadores involucrados
@@ -135,25 +157,6 @@ private function determineNextPlayer($game, $currentUser)
     }
 
     return null; // Retornar null si el usuario actual no es un jugador válido en el juego
-}
-
-private function checkIfSuccessfulAttack($gameId, $x, $y, $user_id): bool {
-    // Verificar si existe un movimiento en las coordenadas especificadas
-    $movimiento = Barco::where('game_id', $gameId)
-                        ->where('horizontal', $x)
-                        ->where('vertical', $y)
-                        ->where('user_id', $user_id)
-                        ->first();
-
-    // Si existe el movimiento, proceder con la eliminación y establecer el winner_id
-    if($movimiento){
-        // Eliminar el movimiento
-        $movimiento->delete();
-        
-        event(new BarcoEvents($movimiento)); 
-        return true;
-    }
-    return false;
 }
 
 public function obtenerJuegoActual(Request $request)
