@@ -23,7 +23,7 @@ export class SearchingComponent implements OnInit {
     broadcaster: 'pusher',
     key: '123',
     cluster: 'mt1',
-    wsHost: 'localhost',
+    wsHost: '127.0.0.1',
     wsPort: 6001,
     forceTLS: false,
     disableStatus: true,

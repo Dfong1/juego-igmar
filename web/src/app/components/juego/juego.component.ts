@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
@@ -30,7 +30,7 @@ export class JuegoComponent implements OnInit {
     disableStatus:true,
   })
 
-  constructor(private js:JuegoService) { }
+  constructor(private js:JuegoService, private cdr: ChangeDetectorRef) { }
   
 
   public juego: JuegoActivo = {
@@ -44,7 +44,8 @@ export class JuegoComponent implements OnInit {
     }
   }
 
-
+  public barcosRival: number = 0
+  public barcosUsuario: number = 0
   
 
 
@@ -66,12 +67,30 @@ export class JuegoComponent implements OnInit {
             console.error('Error al colocar barcos:', error);
           }
         );
-
+  
       },
       (error) => {
         console.error('Error al obtener información del juego:', error);
       }
     );
+  
+    // Establecer la conexión WebSocket una vez que se inicializa el componente
+    this.websocket();
+  }
+  
+  sendBoardPosition(vertical: number, horizontal: number) {
+    const position = { vertical, horizontal };
+  
+    console.log(this.barcosRival)
+    console.log(position)
+  
+    console.log(this.juego.game.id)
+  
+    this.js.movimiento(horizontal, vertical, this.juego.game.id).subscribe(
+      (response) => {
+        console.log(response)
+      }
+    )
   }
 
   trackByIndex(index: number, item: any): number {
@@ -82,8 +101,10 @@ export class JuegoComponent implements OnInit {
   websocket() {
     this.echo.channel('barcos.' + this.juego.game.id)
       .listen('.BarcoEvents', (data: any) => {
-        console.log('Cantidad de barcos del rival:', data.barcosDelRival);
-        console.log('Cantidad de tus barcos:', data.barcosDelUsuario);
+        console.log(typeof data.barcosRival)
+        this.barcosRival = data.barcosRival;
+        this.barcosUsuario = data.barcosUsuario;
+        this.cdr.detectChanges(); // Forzar la detección de cambios
       });
     this.echo.connect();
   }
@@ -128,20 +149,22 @@ export class JuegoComponent implements OnInit {
     return positions;
   }
 
-  sendBoardPosition(vertical: number, horizontal: number) {
-    const position = { vertical, horizontal };
-    console.log(position)
-    this.websocket()
+  // sendBoardPosition(vertical: number, horizontal: number) {
+  //   const position = { vertical, horizontal };
 
-    console.log(this.juego.game.id)
+  //   console.log(this.barcosRival)
+  //   console.log(position)
+  //   this.websocket()
 
-    this.js.movimiento(horizontal, vertical, this.juego.game.id).subscribe(
-      (response) => {
-        console.log(response)
-      }
-    )
+  //   console.log(this.juego.game.id)
+
+  //   this.js.movimiento(horizontal, vertical, this.juego.game.id).subscribe(
+  //     (response) => {
+  //       console.log(response)
+  //     }
+  //   )
     
-  }
+  // }
   generateOponentBoard(): void {
     const numCols = 5;
     const numRows = 8;
