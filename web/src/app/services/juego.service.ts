@@ -12,12 +12,12 @@ export class JuegoService {
 
   constructor(private http: HttpClient) { }
 
-  private getPartidaURL = `${environment.api}}/api/user/juego/get-game`
-  private buscarPartidaURL = `${environment.api}}/api/user/buscar/partida`
-  private mandarMisilURL = `${environment.api}}/api/user/juego/`
-  private colocarBarcosURL = `${environment.api}}/api/user/juego/`
-  private getbarcosURL = `${environment.api}}/api/user/getBarcosCount`
-  private getQueueURL = `${environment.api}}/api/user/get-queue`
+  private getPartidaURL = `${environment.api}/api/user/juego/get-game`
+  private buscarPartidaURL = `${environment.api}/api/user/buscar/partida`
+  private mandarMisilURL = `${environment.api}/api/user/juego/`
+  private colocarBarcosURL = `${environment.api}/api/user/juego/`
+  private getbarcosURL = `${environment.api}/api/user/getBarcosCount`
+  private getQueueURL = `${environment.api}/api/user/get-queue`
 
   getPartida(): Observable<JuegoActivo> {
     return this.http.post<JuegoActivo>(this.getPartidaURL, {})
