@@ -5,6 +5,7 @@ import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 import { JuegoService } from '../../services/juego.service';
 import { JuegoActivo } from '../../Interfaces/juego-activo';
+import Swal from 'sweetalert2'
 (window as any).Pusher = Pusher
 
 @Component({
@@ -54,14 +55,14 @@ export class JuegoComponent implements OnInit {
     this.generateOponentBoard();
     const savedPositions = JSON.parse(localStorage.getItem('positions') || '[]');
   
-    // Obtener la información del juego
+    
     this.js.getPartida().subscribe(
       (response) => {
-        // Asignar el ID del juego
+        
         this.juego.game.id = response.game.id;
         this.js.colocarBarcos(savedPositions, this.juego.game.id).subscribe(
           (response) => {
-            // Manejar la respuesta si es necesario
+
           },
           (error) => {
             console.error('Error al colocar barcos:', error);
@@ -74,28 +75,55 @@ export class JuegoComponent implements OnInit {
       }
     );
   
-    // Establecer la conexión WebSocket una vez que se inicializa el componente
+  
     this.websocket();
   }
-  
+
+
   sendBoardPosition(vertical: number, horizontal: number) {
     const position = { vertical, horizontal };
   
-    console.log(this.barcosRival)
-    console.log(position)
-  
-    console.log(this.juego.game.id)
+    console.log(this.barcosRival);
+    console.log(position);
+    console.log(this.juego.game.id);
   
     this.js.movimiento(horizontal, vertical, this.juego.game.id).subscribe(
       (response) => {
-        console.log(response)
+        console.log(response);
+        
+        if (response.is_successful) {
+          Swal.fire({
+            icon: 'success',
+            title: '¡Le diste!',
+            text: 'Acabas de derribar un barco enemigo',
+          });
+        } else {
+          
+          Swal.fire({
+            icon: 'info',
+            title: 'Oops...',
+            text: 'Parece que aquí no hay nada',
+          });
+        }
+      },
+      (error) => {
+        console.error('Error:', error);
+        if (error.error === 'No es tu turno >:(') {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'No es tu turno!',
+          });
+        }
       }
-    )
+    );
   }
 
   trackByIndex(index: number, item: any): number {
     return index;
   }
+
+  
 
  
   websocket() {
@@ -104,7 +132,9 @@ export class JuegoComponent implements OnInit {
         console.log(typeof data.barcosRival)
         this.barcosRival = data.barcosRival;
         this.barcosUsuario = data.barcosUsuario;
-        this.cdr.detectChanges(); // Forzar la detección de cambios
+        console.log(data);
+        
+        this.cdr.detectChanges(); 
       });
     this.echo.connect();
   }
