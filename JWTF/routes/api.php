@@ -99,22 +99,3 @@ Route::post('turnos',[JuegosController::class,'turnos']);
 
 
 Route::post('guardarestadisticas',[EstadisticasController::class,'store']);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

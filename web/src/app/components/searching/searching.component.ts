@@ -1,4 +1,4 @@
-import { Component, NgZone, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { JuegoService } from '../../services/juego.service';
 import Echo from 'laravel-echo';
@@ -17,20 +17,20 @@ import { SpinnerComponent } from '../spinner/spinner.component';
 
 export class SearchingComponent implements OnInit {
 
-  constructor(private router: Router, private js: JuegoService, private ngZone: NgZone) { }
+  constructor(private router: Router, private js: JuegoService) { }
 
   public echo: Echo = new Echo({
     broadcaster: 'pusher',
     key: '123',
     cluster: 'mt1',
-    wsHost: '127.0.0.1',
+    wsHost: 'localhost',
     wsPort: 6001,
     forceTLS: false,
     disableStatus: true,
   });;
-
+  
   ngOnInit(): void {
-
+    
     this.websocket();
 
     // this.js.getQueue().subscribe(
@@ -42,10 +42,13 @@ export class SearchingComponent implements OnInit {
     // Inicia la búsqueda de partida cuando el componente se inicie
     this.js.buscarPartida().subscribe(
       (response) => {
-        console.log(response); 
-        // No redirigir aquí, la redirección se manejará en el websocket
+        console.log(response)
+      }, (error) => {
+        console.log("ERROR",error)
       }
-    );
+    )
+    
+
   }
 
   websocket() {
@@ -55,6 +58,10 @@ export class SearchingComponent implements OnInit {
       }
     });
 
-    this.echo.connect();
+    console.log(this.echo)
+    this.echo.connector.socketId((socketId: string) => {
+      console.log(socketId)
+    })
+    
   }
 }

@@ -20,11 +20,15 @@ class BarcoEvents implements ShouldBroadcast
      * @return void
      */
 
-     public $barcos;
+     public $barcosUsuario;
+     public $gameId;
+     public $barcosRival;
      
-    public function __construct($barcos)
+    public function __construct($gameId, $barcosRival, $barcosUsuario)
     {
-        $this->barcos = $barcos;
+        $this->gameId = $gameId;
+        $this->barcosRival = $barcosRival;
+        $this->barcosUsuario = $barcosUsuario;
     }
 
     /**
@@ -35,13 +39,13 @@ class BarcoEvents implements ShouldBroadcast
     public function broadcastOn() 
     {
         return [
-            new Channel('Barcos')
+            new Channel('barcos.'.$this->gameId)
         ];
     }
 
     public function broadcastAs()
     {
-    return new channel('BarcoEvents');
+    return 'BarcoEvents';
     }
 
   

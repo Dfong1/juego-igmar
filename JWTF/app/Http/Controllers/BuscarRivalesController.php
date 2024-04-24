@@ -49,7 +49,7 @@ class BuscarRivalesController extends Controller
     {
         try {
             // Verificar si el usuario ya está en un juego activo
-            $userId = auth()->user()->id;
+            $userId = auth()->user();
             $existingGame = Game::where('status', 'activo')
                                 ->where(function ($query) use ($userId) {
                                     $query->where('player1_id', $userId)
@@ -62,7 +62,7 @@ class BuscarRivalesController extends Controller
             }
     
             // Verificar si el usuario ya está en la cola de búsqueda
-            $existingQueue = MatchPlayer::where('user_id', $userId)->first();
+            $existingQueue = MatchPlayer::where('user_id', $userId->id)->first();
     
             if ($existingQueue) {
                 return response()->json(['message' => 'El jugador ya está buscando partida']);
@@ -75,7 +75,7 @@ class BuscarRivalesController extends Controller
     
             // Inicializar $game
             $game = null;
-
+    
             $usersInQueue = MatchPlayer::count();
     
             if ($usersInQueue >= 2) {
@@ -88,13 +88,13 @@ class BuscarRivalesController extends Controller
                     'player2_id' => $playerIds[1],
                     'next_player_id' => $playerIds[1]
                 ]);
-
+    
                 
                 // Eliminar a los jugadores emparejados de la cola de búsqueda
                 MatchPlayer::whereIn('user_id', $playerIds)->delete();
                 
                 event(new MatchPlayers($userId));
-                // return response()->json(['message' => 'Buscando partida', 'game' => $game]);
+                return response()->json(['message' => 'Buscando partida', 'game' => $game]);
             } else {
                 return response()->json(['message' => 'Buscando partida', $userId]);
             }

@@ -38,12 +38,12 @@ return [
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
                 'useTLS' => true,
-                'host' => env('PUSHER_HOST','192.168.117.37'),
+                'host' => env('PUSHER_HOST','127.0.0.1'),
                 'port' => 6001,
                 'scheme' => 'http'
             ],
             'client_options' => [
-                // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
+                
             ],
         ],
 

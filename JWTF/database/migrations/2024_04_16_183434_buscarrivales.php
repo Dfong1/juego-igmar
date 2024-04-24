@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        schema::create('buscarrivales',function(Blueprint $table){
+        Schema::create('buscarrivales',function(Blueprint $table){
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users');
             $table->timestamps();
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('buscarrivales');
     }
 };

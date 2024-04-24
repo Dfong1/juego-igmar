@@ -8,6 +8,7 @@ import { SearchingComponent } from './components/searching/searching.component';
 import { CodigoComponent } from './components/codigo/codigo.component';
 import { loginGuard } from './guards/login.guard';
 import { authGuard } from './guards/auth.guard';
+import { JuegoComponent } from './components/juego/juego.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -16,7 +17,7 @@ export const routes: Routes = [
     { path: 'register', component: RegisterComponent },
     { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard]},
     { path: 'estadisticas', component: EstadisticasComponent, canActivate: [authGuard]},
-    { path: 'search', loadComponent: () =>  import('./components/searching/searching.component').then(s => s.SearchingComponent), canActivate: [authGuard] },
-    { path: 'juego', loadComponent: () => import('./components/juego/juego.component').then(j => j.JuegoComponent), canActivate: [authGuard] },
+    { path: 'search', component: SearchingComponent },
+    { path: 'juego', component: JuegoComponent },
     { path: '**', component: NotfoundComponent}
 ];

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { api } from '../Interfaces/enviroment';
+import { environment } from '../../environments/environment.prod';
 import { Observable } from 'rxjs';
 import { JuegoActivo } from '../Interfaces/juego-activo';
 import { Movimientos } from '../Interfaces/movimientos';
@@ -12,12 +12,12 @@ export class JuegoService {
 
   constructor(private http: HttpClient) { }
 
-  private getPartidaURL = `${api}/api/user/juego/get-game`
-  private buscarPartidaURL = `${api}/api/user/buscar/partida`
-  private mandarMisilURL = `${api}/api/user/juego/`
-  private colocarBarcosURL = `${api}/api/user/juego/`
-  private getbarcosURL = `${api}/api/user/getBarcosCount`
-  private getQueueURL = `${api}/api/user/get-queue`
+  private getPartidaURL = `${environment.api}}/api/user/juego/get-game`
+  private buscarPartidaURL = `${environment.api}}/api/user/buscar/partida`
+  private mandarMisilURL = `${environment.api}}/api/user/juego/`
+  private colocarBarcosURL = `${environment.api}}/api/user/juego/`
+  private getbarcosURL = `${environment.api}}/api/user/getBarcosCount`
+  private getQueueURL = `${environment.api}}/api/user/get-queue`
 
   getPartida(): Observable<JuegoActivo> {
     return this.http.post<JuegoActivo>(this.getPartidaURL, {})

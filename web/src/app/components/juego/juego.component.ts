@@ -24,7 +24,7 @@ export class JuegoComponent implements OnInit {
     broadcaster:'pusher',
     key:'123',
     cluster:'mt1',
-    wsHost:'127.0.0.1',
+    wsHost:'192.168.100.224',
     wsPort:6001,
     forceTLS:false,
     disableStatus:true,
@@ -79,12 +79,13 @@ export class JuegoComponent implements OnInit {
   }
 
  
-  websocket(){
-    this.echo.channel('Barcos').listen('.BarcosEvent',(e:any) => {
-      console.log(e),
-      console.log('ya jala');
-    })
-    this.echo.connect()
+  websocket() {
+    this.echo.channel('barcos.' + this.juego.game.id)
+      .listen('.BarcoEvents', (data: any) => {
+        console.log('Cantidad de barcos del rival:', data.barcosDelRival);
+        console.log('Cantidad de tus barcos:', data.barcosDelUsuario);
+      });
+    this.echo.connect();
   }
 
   generateBoard(): void {

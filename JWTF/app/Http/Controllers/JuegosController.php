@@ -65,14 +65,8 @@ public function hacerMovimiento(Request $request, $gameId)
             return response()->json(['error' => 'No es tu turno >:('], 403);
         }
 
-        if($currentUser->id == $game->player1_id){
-            // Realizar el ataque y actualizar el estado del juego
-            $isSuccessful = $this->checkIfSuccessfulAttack($gameId, $request->horizontal, $request->vertical, $game->player2_id);
-        }
-        else{
-            // Realizar el ataque y actualizar el estado del juego
-            $isSuccessful = $this->checkIfSuccessfulAttack($gameId, $request->horizontal, $request->vertical, $game->player1_id);
-        }
+        // Realizar el ataque y actualizar el estado del juego
+        $isSuccessful = $this->checkIfSuccessfulAttack($gameId, $request->horizontal, $request->vertical, $currentUser->id);
 
         // Verificar si el usuario actual ha ganado
         $winnerId = $this->checkForWinner($gameId, $currentUser->id);
@@ -95,6 +89,19 @@ public function hacerMovimiento(Request $request, $gameId)
         // Guardar el ID del siguiente jugador en el juego
         $game->next_player_id = $nextPlayerId;
         $game->save();
+
+        // Obtener la cantidad de barcos restantes del rival
+        $remainingShipsOpponent = Barco::where('game_id', $gameId)
+            ->where('user_id', '!=', $currentUser->id)
+            ->count();
+
+        // Obtener la cantidad de barcos restantes del usuario actual
+        $remainingShipsCurrentUser = Barco::where('game_id', $gameId)
+            ->where('user_id', $currentUser->id)
+            ->count();
+
+        // Emitir evento de actualización de la cantidad de barcos
+        event(new BarcoEvents($gameId, $remainingShipsOpponent, $remainingShipsCurrentUser));
 
         // Emitir evento de actualización del juego
         event(new ActualizaJuego($game));
@@ -149,8 +156,6 @@ private function checkIfSuccessfulAttack($gameId, $x, $y, $user_id): bool {
     if($movimiento){
         // Eliminar el movimiento
         $movimiento->delete();
-        
-        event(new BarcoEvents($movimiento)); 
         return true;
     }
     return false;
