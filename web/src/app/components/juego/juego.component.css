@@ -1,5 +1,6 @@
 .tableros {
   display: flex;
+  margin-bottom: 100px;
 }
 
 .board {
@@ -9,6 +10,7 @@
     height: 80vh;
     margin: auto;
     margin-top: 50px;
+
   }
   
   .row {

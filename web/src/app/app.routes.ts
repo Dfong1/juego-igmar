@@ -1,23 +1,14 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './components/login/login.component';
-import { RegisterComponent } from './components/register/register.component';
-import { NotfoundComponent } from './components/notfound/notfound.component';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { EstadisticasComponent } from './components/estadisticas/estadisticas.component';
-import { SearchingComponent } from './components/searching/searching.component';
-import { CodigoComponent } from './components/codigo/codigo.component';
-import { loginGuard } from './guards/login.guard';
 import { authGuard } from './guards/auth.guard';
-import { JuegoComponent } from './components/juego/juego.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
-    { path: 'login', component: LoginComponent },
-    { path: 'verificar-codigo', component: CodigoComponent},
-    { path: 'register', component: RegisterComponent },
-    { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard]},
-    { path: 'estadisticas', component: EstadisticasComponent, canActivate: [authGuard]},
+    { path: 'login', loadComponent: () => import('./components/login/login.component').then(l => l.LoginComponent)  },
+    { path: 'verificar-codigo', loadComponent: () => import('./components/codigo/codigo.component').then(c => c.CodigoComponent)},
+    { path: 'register', loadComponent: () => import('./components/register/register.component').then(r => r.RegisterComponent) },
+    { path: 'dashboard', loadComponent: () =>  import('./components/dashboard/dashboard.component').then(d => d.DashboardComponent), canActivate: [authGuard]},
+    { path: 'estadisticas', loadComponent: () => import('./components/estadisticas/estadisticas.component').then(e => e.EstadisticasComponent), canActivate: [authGuard]},
     { path: 'search', loadComponent: () => import('./components/searching/searching.component').then(s => s.SearchingComponent), canActivate: [authGuard] },
     { path: 'juego', loadComponent: () => import('./components/juego/juego.component').then(j => j.JuegoComponent), canActivate: [authGuard] },
-    { path: '**', component: NotfoundComponent}
+    { path: '**', loadComponent: () => import('./components/notfound/notfound.component').then(n => n.NotfoundComponent)}
 ];

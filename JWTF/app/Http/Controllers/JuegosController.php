@@ -95,7 +95,7 @@ public function hacerMovimiento(Request $request, $gameId)
             $game->status = 'terminado';
             $game->winner_id = $winnerId;
             $game->save();
-            event(new ActualizaJuego($game));
+            event(new ActualizaJuego($game, 0, 0));
 
             return response()->json(['message' => '¡Felicidades! Has ganado']);
         }

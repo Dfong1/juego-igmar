@@ -26,7 +26,7 @@ export class JuegoComponent implements OnInit {
     broadcaster:'pusher',
     key:'123',
     cluster:'mt1',
-    wsHost:'192.168.252.143',
+    wsHost:'192.168.0.155',
     wsPort:6001,
     forceTLS:false,
     disableStatus:true,
@@ -70,43 +70,6 @@ export class JuegoComponent implements OnInit {
     
     this.websocketHit();
 
-    this.js.movimiento(-1, -1, this.juego.game.id).subscribe(
-      (response) => {
-        console.log(response);
-        // if (this.player1_id == this.user.id) {
-        //   this.barcosRival -= response.is_successful
-        // } else if (this.player2_id == this.user.id) {
-        //   this.barcosUsuario -= response.is_successful
-        // }
-
-        console.log(this.barcosRival)
-        console.log(this.barcosUsuario)
-
-        if (response.is_successful) {
-          Swal.fire({
-            icon: 'success',
-            title: '¡Le diste!',
-            text: 'Acabas de derribar un barco enemigo',
-          });
-        } else if (response.is_successful == false) {
-          Swal.fire({
-            icon: 'warning',
-            title: 'No has atinado a un barco',
-          });
-        }
-        // Marcar para revisión del cambio
-      },
-      (error) => {
-        console.error('Error:', error);
-        if (error.error === 'No es tu turno >:(') {
-          Swal.fire({
-            icon: 'error',
-            title: error.error,
-          });
-        }
-      }
-    );
-
     const savedPositions = JSON.parse(localStorage.getItem('positions') || '[]');
 
     this.us.getData().subscribe(
@@ -134,6 +97,42 @@ export class JuegoComponent implements OnInit {
       },
       (error) => {
         console.error('Error al obtener información del juego:', error);
+      }
+    );
+    this.js.movimiento(-1, -1, this.juego.game.id).subscribe(
+      (response) => {
+        console.log(response);
+        // if (this.player1_id == this.user.id) {
+        //   this.barcosRival -= response.is_successful
+        // } else if (this.player2_id == this.user.id) {
+        //   this.barcosUsuario -= response.is_successful
+        // }
+
+        console.log(this.barcosRival)
+        console.log(this.barcosUsuario)
+
+        // if (response.is_successful) {
+        //   Swal.fire({
+        //     icon: 'success',
+        //     title: '¡Le diste!',
+        //     text: 'Acabas de derribar un barco enemigo',
+        //   });
+        // } else if (response.is_successful == false) {
+        //   Swal.fire({
+        //     icon: 'warning',
+        //     title: 'No has atinado a un barco',
+        //   });
+        // }
+        // Marcar para revisión del cambio
+      },
+      (error) => {
+        console.error('Error:', error);
+        if (error.error === 'No es tu turno >:(') {
+          Swal.fire({
+            icon: 'error',
+            title: error.error,
+          });
+        }
       }
     );
   }
@@ -187,6 +186,15 @@ export class JuegoComponent implements OnInit {
   websocketHit(){
     this.echo.channel('barcos.'+this.juego.game.id).listen('.BarcoEvents', (data: any) => {
       console.log("WEBSOCKET HIT",data)
+      
+      if(data.y !== undefined && data.x !== undefined){
+        if(data.x >= 0 && data.x < this.board[0].length && data.y < this.board.length){
+          if(data.user_id == this.user.id){
+            this.board[data.y][data.x] = '#F21B1B'
+          }
+        }
+      }
+
     })
     this.echo.connect()
   }

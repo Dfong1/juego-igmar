@@ -64,7 +64,7 @@ class EstadisticasController extends Controller
             ->join('users', 'estadisticas.user_id', '=', 'users.id')
             ->where('user_id', $id)
             ->orWhere('rival_id', $id)
-            ->orderBy('estadisticas.id', 'ASC') // Ordenar por partida de forma ascendente
+            ->orderBy('estadisticas.id', 'DESC') // Ordenar por partida de forma ascendente
             ->get();
     
             foreach ($registros as $registro){
