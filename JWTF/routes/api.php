@@ -75,9 +75,10 @@ Route::group([
     Route::post('/updatear',[BuscarRivalesController::class,'update']);
     Route::get('me', 'App\Http\Controllers\AuthController@me');
     
-    Route::get('registrobatalla/{id}',[EstadisticasController::class,'registrobatallas']);
+    Route::get('registrobatalla',[EstadisticasController::class,'registrobatallas']);
     Route::get('movimiento/{id}',[JuegosController::class,'hacerMovimiento']);
     Route::post('/buscar/partida', [BuscarRivalesController:: class, 'joinQueue']);
+    Route::post('/cancelar/partida', [BuscarRivalesController:: class, 'joinQueue']);
     Route::get('/get-queue', [BuscarRivalesController:: class, 'getQueue']);
 
     Route::group(['prefix' => 'juego'], function () {

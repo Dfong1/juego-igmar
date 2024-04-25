@@ -16,4 +16,15 @@ class Barco extends Model
         'horizontal',
         'vertical'
     ];
+
+    public function game()
+    {
+        return $this->belongsTo(Game::class, 'game_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+    
 }

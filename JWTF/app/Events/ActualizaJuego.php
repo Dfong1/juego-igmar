@@ -15,24 +15,20 @@ class ActualizaJuego implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    /**
-     * Create a new event instance.
-     *
-     * @return void
-     */
     public $game;
 
     public function __construct(Game $game)
     {
         $this->game = $game;
     }
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
+
     public function broadcastOn()
     {
         return new Channel('evento-juego');
+    }
+
+    public function broadcastAs()
+    {
+        return 'ActualizaJuego';
     }
 }

@@ -6,6 +6,9 @@ import Pusher from 'pusher-js';
 import { JuegoService } from '../../services/juego.service';
 import { JuegoActivo } from '../../Interfaces/juego-activo';
 import Swal from 'sweetalert2'
+import { UserService } from '../../services/user.service';
+import { User } from '../../Interfaces/user-interface';
+import { Router } from '@angular/router';
 (window as any).Pusher = Pusher
 
 @Component({
@@ -31,8 +34,17 @@ export class JuegoComponent implements OnInit {
     disableStatus:true,
   })
 
-  constructor(private js:JuegoService, private cdr: ChangeDetectorRef) { }
+  constructor(private us: UserService, private js:JuegoService, private router: Router) { } 
   
+  public user: User = {
+    id: 0,
+    email: "",
+    name: "",
+    codigoVerificadO: false,
+    created_at: "",
+    is_active: false,
+    updated_at: ""
+  }
 
   public juego: JuegoActivo = {
     game: {
@@ -53,9 +65,16 @@ export class JuegoComponent implements OnInit {
   ngOnInit(): void {
     this.generateBoard();
     this.generateOponentBoard();
+    this.websocketPartida()
     const savedPositions = JSON.parse(localStorage.getItem('positions') || '[]');
   
     
+    this.us.getData().subscribe(
+      (response) => {
+        this.user = response
+      }
+    )
+
     this.js.getPartida().subscribe(
       (response) => {
         
@@ -72,6 +91,10 @@ export class JuegoComponent implements OnInit {
       },
       (error) => {
         console.error('Error al obtener información del juego:', error);
+        if(error){
+          this.router.navigate(['/dashboard'])
+
+        }
       }
     );
   
@@ -97,12 +120,11 @@ export class JuegoComponent implements OnInit {
             title: '¡Le diste!',
             text: 'Acabas de derribar un barco enemigo',
           });
-        } else {
-          
+        }
+        else if(response.is_successful == false){          
           Swal.fire({
-            icon: 'info',
-            title: 'Oops...',
-            text: 'Parece que aquí no hay nada',
+            icon: 'warning',
+            title: 'No has atinado a un barco',
           });
         }
       },
@@ -111,8 +133,7 @@ export class JuegoComponent implements OnInit {
         if (error.error === 'No es tu turno >:(') {
           Swal.fire({
             icon: 'error',
-            title: 'Oops...',
-            text: 'No es tu turno!',
+            title: error.error,
           });
         }
       }
@@ -133,11 +154,32 @@ export class JuegoComponent implements OnInit {
         this.barcosRival = data.barcosRival;
         this.barcosUsuario = data.barcosUsuario;
         console.log(data);
-        
-        this.cdr.detectChanges(); 
       });
     this.echo.connect();
   }
+
+  websocketPartida() {
+    this.echo.channel('evento-juego').listen('.ActualizaJuego', (data: any) => {
+        console.log(data);
+
+        if(data.game.winner_id){
+          if (data.game.winner_id === this.user.id) {
+              Swal.fire({
+                  icon: 'success',
+                  title: '¡Felicidades! Has ganado',
+              });
+          } else if(data.game.winner_id !== this.user.id){
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Perdiste la partida',
+              });
+          } 
+          this.router.navigate(['/dashboard'])
+        }
+    });
+
+    this.echo.connect();
+}
 
   generateBoard(): void {
     const numCols = 5;

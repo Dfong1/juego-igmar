@@ -9,6 +9,11 @@
     justify-content: space-around;
 }
 
+.titulos{
+    width: 25%; 
+    text-align: center;
+}
+
 .partidas{
     text-align: center;
     border-right: 1px solid black;

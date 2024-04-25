@@ -79,6 +79,7 @@ public function hacerMovimiento(Request $request, $gameId)
             $game->status = 'terminado';
             $game->winner_id = $winnerId;
             $game->save();
+            event(new ActualizaJuego($game));
 
             return response()->json(['message' => '¡Felicidades! Has ganado']);
         }
@@ -113,10 +114,13 @@ public function hacerMovimiento(Request $request, $gameId)
 
 private function checkIfSuccessfulAttack($gameId, $x, $y, $user_id): bool {
     // Buscar el barco en las coordenadas especificadas
+    $game = Game::find($gameId);
+    $opponentId = ($user_id === $game->player1_id) ? $game->player2_id : $game->player1_id;
+
     $movimiento = Barco::where('game_id', $gameId)
                         ->where('horizontal', $x)
                         ->where('vertical', $y)
-                        ->where('user_id', $user_id)
+                        ->where('user_id', $opponentId)
                         ->first();
 
     // Verificar si se encontró el barco

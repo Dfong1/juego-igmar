@@ -17,4 +17,14 @@ class Estadistica extends Model
         'partida',
         'rival_id',
     ];
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function rival()
+    {
+        return $this->belongsTo(User::class, 'rival_id');
+    }
 }

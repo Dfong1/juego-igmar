@@ -52,6 +52,7 @@ export class LoginComponent {
           this.route.navigate(['/verificar-codigo'])
         }, 2000)
       }, (error) => {
+        console.log(error)
         this.msg.msg = ""
         this.errorMsg = error.error
       }

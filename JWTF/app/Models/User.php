@@ -65,5 +65,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Game::class, 'player1_id', 'id')->orWhere('player2_id', $this->id);
     }
-  
+
+    public function estadisticasComoUsuario()
+    {
+        return $this->hasMany(Estadistica::class, 'user_id');
+    }
+
+    public function estadisticasComoRival()
+    {
+        return $this->hasMany(Estadistica::class, 'rival_id');
+    }
 }

@@ -111,5 +111,15 @@ class BuscarRivalesController extends Controller
     }
 
 
+    public function cancelQueu(){
+        $userId = auth()->user()->id;
+
+        $matchPlayer = MatchPlayer::where('user_id', $userId);
+
+        $matchPlayer->delete();
+
+        return response()->json(['message' => 'Busqueda cancelada']);
+    }
+
     
 }
