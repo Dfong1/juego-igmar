@@ -20,15 +20,18 @@ class BarcoEvents implements ShouldBroadcast
      * @return void
      */
 
-     public $barcosUsuario;
+     public $y;
      public $gameId;
-     public $barcosRival;
+     public $user_id;
+
+     public $X;
      
-    public function __construct($gameId, $barcosRival, $barcosUsuario)
+    public function __construct($gameId, $user_id,$x,$y )
     {
         $this->gameId = $gameId;
-        $this->barcosRival = $barcosRival;
-        $this->barcosUsuario = $barcosUsuario;
+        $this->user_id = $user_id;
+        $this->x = $x;
+        $this->y = $y;
     }
 
     /**

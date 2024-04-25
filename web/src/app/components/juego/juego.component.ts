@@ -66,6 +66,7 @@ export class JuegoComponent implements OnInit {
     this.generateBoard();
     this.generateOponentBoard();
     this.websocketPartida();
+    this.websocketHit();
     const savedPositions = JSON.parse(localStorage.getItem('positions') || '[]');
 
     this.us.getData().subscribe(
@@ -98,6 +99,8 @@ export class JuegoComponent implements OnInit {
     console.log(this.barcosRival);
     console.log(position);
     console.log(this.juego.game.id);
+
+    this.websocketHit()
 
     this.js.movimiento(horizontal, vertical, this.juego.game.id).subscribe(
       (response) => {
@@ -135,6 +138,13 @@ export class JuegoComponent implements OnInit {
         }
       }
     );
+  }
+
+  websocketHit(){
+    this.echo.channel('barcos').listen('.BarcoEvents', (data: any) => {
+      console.log(data)
+    })
+    this.echo.connect()
   }
 
   websocketPartida() {

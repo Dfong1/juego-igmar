@@ -104,9 +104,9 @@ public function hacerMovimiento(Request $request, $gameId)
         // Obtener el conteo de barcos derribados por cada jugador
         if ($isSuccessful) {
             if ($currentUser->id == $player2Id) {
-                event(new ActualizaJuego($game, $isSuccessful, 0));
+                event(new ActualizaJuego($game));
             } else {
-                event(new ActualizaJuego($game, 0, $isSuccessful));
+                event(new ActualizaJuego($game));
             }
         }
 
@@ -118,20 +118,9 @@ public function hacerMovimiento(Request $request, $gameId)
     }
 }
 
-public function countShipsDestroyed($gameId, $playerId)
-{
-    // Obtener todos los movimientos del jugador en el juego específico
-    $movimientos = Barco::where('game_id', $gameId)
-                        ->where('user_id', $playerId)
-                        ->get();
 
-    // Contar el número de movimientos que resultaron en un barco destruido
-    $shipsDestroyedCount = $movimientos->count();
 
-    return $shipsDestroyedCount;
-}
-
-private function checkIfSuccessfulAttack($gameId, $x, $y, $user_id): bool {
+private function  ($gameId, $x, $y, $user_id): bool {
     // Buscar el barco en las coordenadas especificadas
     $movimiento = Barco::where('game_id', $gameId)
                         ->where('horizontal', $x)
@@ -141,6 +130,8 @@ private function checkIfSuccessfulAttack($gameId, $x, $y, $user_id): bool {
 
     // Verificar si se encontró el barco
     if($movimiento){
+
+        event(new BarcoEvents($gameId, $x, $y, $user_id));
         // Si se encontró el barco, eliminarlo
         $movimiento->delete();
 
