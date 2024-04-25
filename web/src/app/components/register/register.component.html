@@ -7,7 +7,7 @@
 </head>
 <body>
     
-    <div class="container">
+    <div class="container" style="border: 3px solid rgb(255, 0, 0);">
         <div class="form-container">
             <form class="form" [formGroup]="form">
                 <div class="alert alert-success fade show" role="alert" *ngIf="msg">
@@ -19,7 +19,7 @@
                 <h1>Registrate</h1>
                 <div class="form-floating mb-3">
                     <input type="email" class="form-control" id="floatingUser" formControlName="usuario" placeholder="Nombre de usuario" [class.is-invalid]="usuario.invalid && (usuario.dirty || usuario.touched)">
-                    <label for="floatingUser">Usuario</label>
+                    <label for="floatingUser">Nombre</label>
 
                     <div [hidden]="usuario.valid || usuario.pristine">
                         <span class="text-danger" *ngIf="usuario.errors?.['required']">Este campo es obligatorio</span>
@@ -56,8 +56,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary mt-2" style="width: 100%; margin: auto;" [disabled]="form.invalid" (click)="registrar()" >Iniciar</button>
-                <p class="mt-3">¿Ya estás registrado? <a routerLink="">Inicia sesión</a></p>
+                <button type="submit" class="btn btn-warning mt-2" style="width: 100%; margin: auto; background-color: #CB1D0D; border-radius: 20px; font-weight: bold; color: white;" [disabled]="form.invalid" (click)="registrar()">Iniciar</button>                <p class="mt-3">¿Ya estás registrado? <a routerLink="">Inicia sesión</a></p>
             </form>
         </div>
     </div>

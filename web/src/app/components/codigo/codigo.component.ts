@@ -19,6 +19,7 @@ export class CodigoComponent {
   public codigo: string = ""
   public message: string|null = ""
   public errorMsg: string|null = ""
+  public mensaje6: string|null = ""
 
   verificar() {
     this.ls.verificarCodigo(this.codigo).subscribe(
@@ -27,10 +28,11 @@ export class CodigoComponent {
         this.message = `Codigo correcto Redireccionando a pantalla principal`
         localStorage.setItem('token', response.token)
         setTimeout(() => {
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/navbar']);
         }, 1500)
       }, (error) => {
-        this.errorMsg = error.message
+        this.errorMsg = error.error
+        this.errorMsg = error.error.verificacion[0]
       }
     )
   }
