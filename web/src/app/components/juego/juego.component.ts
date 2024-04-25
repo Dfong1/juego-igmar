@@ -63,12 +63,10 @@ export class JuegoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    const savedPositions = JSON.parse(localStorage.getItem('positions') || '[]');
-    
     this.generateBoard();
     this.generateOponentBoard();
     this.websocketPartida();
-    
+    const savedPositions = JSON.parse(localStorage.getItem('positions') || '[]');
 
     this.us.getData().subscribe(
       (response) => {
@@ -113,20 +111,19 @@ export class JuegoComponent implements OnInit {
         console.log(this.barcosRival)
         console.log(this.barcosUsuario)
 
-        if (response.is_successful == 1) {
+        if (response.is_successful) {
           Swal.fire({
             icon: 'success',
             title: '¡Le diste!',
             text: 'Acabas de derribar un barco enemigo',
           });
-        } else if (response.is_successful == 0) {
+        } else if (response.is_successful == false) {
           Swal.fire({
             icon: 'warning',
             title: 'No has atinado a un barco',
           });
         }
         // Marcar para revisión del cambio
-        this.cdr.markForCheck();
       },
       (error) => {
         console.error('Error:', error);

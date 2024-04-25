@@ -75,18 +75,21 @@ public function hacerMovimiento(Request $request, $gameId)
             $isSuccessful = $this->checkIfSuccessfulAttack($gameId, $request->horizontal, $request->vertical, $game->player1_id);
         }
 
-        // Guardar el movimiento en la base de datos
-        Barco::create([
-            'game_id' => $gameId,
-            'user_id' => $currentUser->id,
-            'horizontal' => $request->horizontal,
-            'vertical' => $request->vertical,
-        ]);
-
         // Verificar si el usuario actual ha ganado
         $winnerId = $this->checkForWinner($gameId, $currentUser->id);
         if ($winnerId) {
-            // Código para manejar el ganador y actualizar el estado del juego
+            Estadistica::create([
+                'user_id' => $game->player1_id,
+                'rival_id' => $game->player2_id,
+                'partida' => $winnerId
+            ]);
+            $game->status = 'terminado';
+            $game->winner_id = $winnerId;
+            $game->save();
+            event(new ActualizaJuego($game)); 
+
+
+            return response()->json(['message' => '¡Felicidades! Has ganado']);
         }
 
         // Determinar el ID del siguiente jugador

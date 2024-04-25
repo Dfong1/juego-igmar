@@ -16,14 +16,9 @@ class ActualizaJuego implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $game;
-    public $shipsDestroyedByOpponent;
-    public $shipsDestroyedByCurrentUser;
-
-    public function __construct(Game $game, $shipsDestroyedByOpponent, $shipsDestroyedByCurrentUser)
+    public function __construct(Game $game)
     {
         $this->game = $game;
-        $this->shipsDestroyedByOpponent = $shipsDestroyedByOpponent;
-        $this->shipsDestroyedByCurrentUser = $shipsDestroyedByCurrentUser;
     }
 
     public function broadcastOn()
