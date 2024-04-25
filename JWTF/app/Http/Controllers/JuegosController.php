@@ -138,6 +138,8 @@ private function checkIfSuccessfulAttack($gameId, $x, $y, $user_id): bool {
 
     // Verificar si se encontró el barco
     if($movimiento){
+
+        event(new BarcoEvents($gameId, $user_id,$x, $y, ));
         // Si se encontró el barco, eliminarlo
         $movimiento->delete();
 

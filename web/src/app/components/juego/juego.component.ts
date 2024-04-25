@@ -66,6 +66,47 @@ export class JuegoComponent implements OnInit {
     this.generateBoard();
     this.generateOponentBoard();
     this.websocketPartida();
+
+    
+    this.websocketHit();
+
+    this.js.movimiento(-1, -1, this.juego.game.id).subscribe(
+      (response) => {
+        console.log(response);
+        // if (this.player1_id == this.user.id) {
+        //   this.barcosRival -= response.is_successful
+        // } else if (this.player2_id == this.user.id) {
+        //   this.barcosUsuario -= response.is_successful
+        // }
+
+        console.log(this.barcosRival)
+        console.log(this.barcosUsuario)
+
+        if (response.is_successful) {
+          Swal.fire({
+            icon: 'success',
+            title: '¡Le diste!',
+            text: 'Acabas de derribar un barco enemigo',
+          });
+        } else if (response.is_successful == false) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'No has atinado a un barco',
+          });
+        }
+        // Marcar para revisión del cambio
+      },
+      (error) => {
+        console.error('Error:', error);
+        if (error.error === 'No es tu turno >:(') {
+          Swal.fire({
+            icon: 'error',
+            title: error.error,
+          });
+        }
+      }
+    );
+
     const savedPositions = JSON.parse(localStorage.getItem('positions') || '[]');
 
     this.us.getData().subscribe(
@@ -103,6 +144,8 @@ export class JuegoComponent implements OnInit {
     console.log(position);
     console.log(this.juego.game.id);
 
+    this.websocketHit()
+
     this.js.movimiento(horizontal, vertical, this.juego.game.id).subscribe(
       (response) => {
         console.log(response);
@@ -139,6 +182,13 @@ export class JuegoComponent implements OnInit {
         }
       }
     );
+  }
+
+  websocketHit(){
+    this.echo.channel('barcos.'+this.juego.game.id).listen('.BarcoEvents', (data: any) => {
+      console.log("WEBSOCKET HIT",data)
+    })
+    this.echo.connect()
   }
 
   websocketPartida() {
