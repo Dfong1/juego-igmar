@@ -38,17 +38,27 @@ public function descontarbarcos($id)
 public function hacerMovimiento(Request $request, $gameId)
 {
     try {
+        // Obtener el juego
+        $game = Game::find($gameId);
+
+        // Verificar si el juego se encontró
+        if (!$game) {
+            return response()->json(['error' => 'El juego no se encontró'], 404);
+        }
+
+        // Obtener el usuario actual
+        $currentUser = auth()->user();
+
+        // Verificar si el usuario está autenticado
+        if (!$currentUser) {
+            return response()->json(['error' => 'Usuario no autenticado'], 401);
+        }
+
         // Validar la solicitud
         $this->validate($request, [
             'horizontal' => 'required|integer',
             'vertical' => 'required|integer',
         ]);
-
-        // Obtener el juego
-        $game = Game::findOrFail($gameId);
-
-        // Obtener el usuario actual
-        $currentUser = Auth::user();
 
         // Verificar si el juego está en curso
         if ($game->status !== 'activo') {
@@ -66,11 +76,10 @@ public function hacerMovimiento(Request $request, $gameId)
         }
 
         // Realizar el ataque y actualizar el estado del juego
-        if($currentUser->id == $game->player1_id){
+        if ($currentUser->id == $game->player1_id) {
             // Realizar el ataque y actualizar el estado del juego
             $isSuccessful = $this->checkIfSuccessfulAttack($gameId, $request->horizontal, $request->vertical, $game->player2_id);
-        }
-        else{
+        } else {
             // Realizar el ataque y actualizar el estado del juego
             $isSuccessful = $this->checkIfSuccessfulAttack($gameId, $request->horizontal, $request->vertical, $game->player1_id);
         }
@@ -86,8 +95,7 @@ public function hacerMovimiento(Request $request, $gameId)
             $game->status = 'terminado';
             $game->winner_id = $winnerId;
             $game->save();
-            event(new ActualizaJuego($game)); 
-
+            event(new ActualizaJuego($game));
 
             return response()->json(['message' => '¡Felicidades! Has ganado']);
         }
@@ -98,7 +106,8 @@ public function hacerMovimiento(Request $request, $gameId)
         // Guardar el ID del siguiente jugador en el juego
         $game->next_player_id = $nextPlayerId;
         $game->save();
-// Obtener el ID del jugador 2 del juego
+
+        // Obtener el ID del jugador 2 del juego
         $player2Id = $game->player2_id;
 
         // Obtener el conteo de barcos derribados por cada jugador
@@ -118,18 +127,6 @@ public function hacerMovimiento(Request $request, $gameId)
     }
 }
 
-public function countShipsDestroyed($gameId, $playerId)
-{
-    // Obtener todos los movimientos del jugador en el juego específico
-    $movimientos = Barco::where('game_id', $gameId)
-                        ->where('user_id', $playerId)
-                        ->get();
-
-    // Contar el número de movimientos que resultaron en un barco destruido
-    $shipsDestroyedCount = $movimientos->count();
-
-    return $shipsDestroyedCount;
-}
 
 private function checkIfSuccessfulAttack($gameId, $x, $y, $user_id): bool {
     // Buscar el barco en las coordenadas especificadas

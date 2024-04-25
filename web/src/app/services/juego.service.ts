@@ -41,7 +41,7 @@ export class JuegoService {
     return this.http.post<Movimientos>(this.mandarMisilURL + id + '/hacer-movimiento', {horizontal, vertical});
   }
 
-  getbarcos(){
+  getbarcos(){ 
     return this.http.get(this.getbarcosURL);
   }
 

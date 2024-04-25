@@ -26,7 +26,7 @@ export class JuegoComponent implements OnInit {
     broadcaster:'pusher',
     key:'123',
     cluster:'mt1',
-    wsHost:'192.168.100.224',
+    wsHost:'192.168.252.143',
     wsPort:6001,
     forceTLS:false,
     disableStatus:true,
@@ -76,7 +76,11 @@ export class JuegoComponent implements OnInit {
 
     this.js.getPartida().subscribe(
       (response) => {
+
+
+
         this.juego.game.id = response.game.id;
+        
         console.log(response)
         this.js.colocarBarcos(savedPositions, this.juego.game.id).subscribe(
           (response) => {
@@ -154,6 +158,10 @@ export class JuegoComponent implements OnInit {
   
       console.log("Barcos restantes del usuario actual:", this.barcosUsuario);
   
+      if(data.game.status == "terminado"){
+        this.router.navigate(['/dashboard'])
+      }
+
       // Resto del código para mostrar mensajes de turno y resultado del juego
       if (data.game.next_player_id === this.user.id) {
         Swal.fire({

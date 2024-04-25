@@ -23,7 +23,7 @@ export class SearchingComponent implements OnInit, OnDestroy {
     broadcaster: 'pusher',
     key: '123',
     cluster: 'mt1',
-    wsHost: '192.168.100.224',
+    wsHost: '192.168.252.143',
     wsPort: 6001,
     forceTLS: false,
     disableStatus: true,
