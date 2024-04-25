@@ -99,7 +99,7 @@ class BuscarRivalesController extends Controller
                 return response()->json(['message' => 'Buscando partida', $userId]);
             }
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Ha ocurrido un error al buscar partida'], 500);
+            return response()->json(['error' => 'Ha ocurrido un error al buscar partida', 'data' => $e->getMessage()], 500);
         }
     }
 

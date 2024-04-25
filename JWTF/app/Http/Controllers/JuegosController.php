@@ -66,7 +66,14 @@ public function hacerMovimiento(Request $request, $gameId)
         }
 
         // Realizar el ataque y actualizar el estado del juego
-        $isSuccessful = $this->checkIfSuccessfulAttack($gameId, $request->horizontal, $request->vertical, $currentUser->id);
+        if($currentUser->id == $game->player1_id){
+            // Realizar el ataque y actualizar el estado del juego
+            $isSuccessful = $this->checkIfSuccessfulAttack($gameId, $request->horizontal, $request->vertical, $game->player2_id);
+        }
+        else{
+            // Realizar el ataque y actualizar el estado del juego
+            $isSuccessful = $this->checkIfSuccessfulAttack($gameId, $request->horizontal, $request->vertical, $game->player1_id);
+        }
 
         // Guardar el movimiento en la base de datos
         Barco::create([
@@ -74,7 +81,6 @@ public function hacerMovimiento(Request $request, $gameId)
             'user_id' => $currentUser->id,
             'horizontal' => $request->horizontal,
             'vertical' => $request->vertical,
-            'destroyed' => $isSuccessful ? true : false, // Marcar el barco como destruido si el ataque es exitoso
         ]);
 
         // Verificar si el usuario actual ha ganado
@@ -89,13 +95,19 @@ public function hacerMovimiento(Request $request, $gameId)
         // Guardar el ID del siguiente jugador en el juego
         $game->next_player_id = $nextPlayerId;
         $game->save();
+// Obtener el ID del jugador 2 del juego
+        $player2Id = $game->player2_id;
 
         // Obtener el conteo de barcos derribados por cada jugador
-        $shipsDestroyedByOpponent = $this->countShipsDestroyed($gameId, $game->player1_id);
-        $shipsDestroyedByCurrentUser = $this->countShipsDestroyed($gameId, $game->player2_id);
+        if ($isSuccessful) {
+            if ($currentUser->id == $player2Id) {
+                event(new ActualizaJuego($game, $isSuccessful, 0));
+            } else {
+                event(new ActualizaJuego($game, 0, $isSuccessful));
+            }
+        }
 
         // Emitir evento de actualización del juego con el conteo de barcos derribados por cada jugador
-        event(new ActualizaJuego($game, $shipsDestroyedByOpponent, $shipsDestroyedByCurrentUser));
 
         return response()->json(['message' => 'Movimiento hecho con éxito', 'is_successful' => $isSuccessful ? 1 : 0]);
     } catch (\Exception $e) {
@@ -103,37 +115,39 @@ public function hacerMovimiento(Request $request, $gameId)
     }
 }
 
-// Método para contar los barcos destruidos por un jugador en un juego específico
 public function countShipsDestroyed($gameId, $playerId)
 {
     // Obtener todos los movimientos del jugador en el juego específico
-    $destroyedShipsCount = Barco::where('game_id', $gameId)
-                                ->where('user_id', $playerId)
-                                ->where('destroyed', true)
-                                ->count();
+    $movimientos = Barco::where('game_id', $gameId)
+                        ->where('user_id', $playerId)
+                        ->get();
 
-    return $destroyedShipsCount;
+    // Contar el número de movimientos que resultaron en un barco destruido
+    $shipsDestroyedCount = $movimientos->count();
+
+    return $shipsDestroyedCount;
 }
 
-// Método para verificar si un ataque fue exitoso
-protected function checkIfSuccessfulAttack($gameId, $horizontal, $vertical, $userId)
-{
-    // Verificar si hay un barco en la posición atacada
-    $barco = Barco::where('game_id', $gameId)
-                  ->where('horizontal', $horizontal)
-                  ->where('vertical', $vertical)
-                  ->first();
+private function checkIfSuccessfulAttack($gameId, $x, $y, $user_id): bool {
+    // Buscar el barco en las coordenadas especificadas
+    $movimiento = Barco::where('game_id', $gameId)
+                        ->where('horizontal', $x)
+                        ->where('vertical', $y)
+                        ->where('user_id', $user_id)
+                        ->first();
 
-    // Si se encontró un barco en la posición atacada, marcarlo como destruido
-    if ($barco) {
-        $barco->delete(); // Opcionalmente puedes implementar algún otro método para marcar el barco como destruido
-        return true; // Ataque exitoso
+    // Verificar si se encontró el barco
+    if($movimiento){
+        // Si se encontró el barco, eliminarlo
+        $movimiento->delete();
+
+        return 1;
     } else {
-        return false; // Ataque fallido
+        // Si no se encontró el barco, el ataque no fue exitoso
+        return 0;
     }
 }
 
-// Método para determinar si un jugador ha ganado el juego
 private function checkForWinner($gameId, $playerId)
 {
     // Obtener el juego y los jugadores involucrados
@@ -142,8 +156,8 @@ private function checkForWinner($gameId, $playerId)
 
     // Contar el número de barcos restantes del oponente
     $remainingShips = Barco::where('game_id', $gameId)
-                            ->where('user_id', $opponentId)
-                            ->count();
+        ->where('user_id', $opponentId)
+        ->count();
 
     // Si el oponente no tiene barcos restantes, el jugador actual gana
     if ($remainingShips === 0) {
@@ -153,7 +167,8 @@ private function checkForWinner($gameId, $playerId)
     return null; // Retornar null si no hay ganador aún
 }
 
-// Método para determinar el siguiente jugador en el juego
+
+
 private function determineNextPlayer($game, $currentUser)
 {
     // Determinar el ID del siguiente jugador

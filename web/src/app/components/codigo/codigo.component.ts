@@ -28,7 +28,7 @@ export class CodigoComponent {
         this.message = `Codigo correcto Redireccionando a pantalla principal`
         localStorage.setItem('token', response.token)
         setTimeout(() => {
-          this.router.navigate(['/navbar']);
+          this.router.navigate(['/dashboard']);
         }, 1500)
       }, (error) => {
         this.errorMsg = error.error

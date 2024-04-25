@@ -26,7 +26,7 @@ export class JuegoComponent implements OnInit {
     broadcaster:'pusher',
     key:'123',
     cluster:'mt1',
-    wsHost:'192.168.100.170',
+    wsHost:'192.168.100.224',
     wsPort:6001,
     forceTLS:false,
     disableStatus:true,
@@ -63,11 +63,12 @@ export class JuegoComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    const savedPositions = JSON.parse(localStorage.getItem('positions') || '[]');
+    
     this.generateBoard();
     this.generateOponentBoard();
     this.websocketPartida();
-
-    const savedPositions = JSON.parse(localStorage.getItem('positions') || '[]');
+    
 
     this.us.getData().subscribe(
       (response) => {
@@ -103,11 +104,11 @@ export class JuegoComponent implements OnInit {
     this.js.movimiento(horizontal, vertical, this.juego.game.id).subscribe(
       (response) => {
         console.log(response);
-        if (this.player1_id == this.user.id) {
-          this.barcosRival -= response.is_successful
-        } else if (this.player2_id == this.user.id) {
-          this.barcosUsuario -= response.is_successful
-        }
+        // if (this.player1_id == this.user.id) {
+        //   this.barcosRival -= response.is_successful
+        // } else if (this.player2_id == this.user.id) {
+        //   this.barcosUsuario -= response.is_successful
+        // }
 
         console.log(this.barcosRival)
         console.log(this.barcosUsuario)

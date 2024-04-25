@@ -23,13 +23,14 @@ export class SearchingComponent implements OnInit, OnDestroy {
     broadcaster: 'pusher',
     key: '123',
     cluster: 'mt1',
-    wsHost: '192.168.100.170',
+    wsHost: '192.168.100.224',
     wsPort: 6001,
     forceTLS: false,
     disableStatus: true,
   });;
   
   ngOnInit(): void {
+    localStorage.removeItem('positions');
     
     this.websocket();
 
