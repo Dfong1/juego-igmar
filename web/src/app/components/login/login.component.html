@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar sesión</title>
 </head>
+<div class="alert alert-danger fade show" role="alert" *ngIf="errorMsg">
+   <h3>Por favor verifica tus credenciales</h3>
+</div>
+<div class="alert alert-danger fade show" role="alert" *ngIf="error">
+    {{ error }}
+</div>
 <body>
-    
-    <div class="container">
-        <div class="form-container">
+    <div class="container" style="border: 3px solid rgb(255, 0, 0)"> <div class="form-container">
             <form class="form" [formGroup]="form">
                 <div class="alert alert-success fade show" role="alert" *ngIf="msg.msg != ''">
-                    {{ msg }}
-                </div>
-                <div class="alert alert-danger fade show" role="alert" *ngIf="errorMsg">
-                    {{ errorMsg }}
+                    {{ msg.msg }}
                 </div>
                 <h1>Iniciar sesión</h1>
                 <div class="form-floating mb-3">
@@ -36,9 +37,8 @@
                     <span class="text-danger" *ngIf="password.errors?.['minlength']">Debe de tener un minimo de 8 digitos</span>
                 </div>
 
-                <button type="submit" class="btn btn-primary mt-2" style="width: 100%; margin: auto;" [disabled]="form.invalid" (click)="Login()" >Iniciar</button>
-                <p class="mt-3">¿No tienes sesión? <a routerLink="/register">Registrate</a></p>
-            </form>
+                <button type="submit" class="btn btn-danger mt-2" style="width: 100%; margin: auto; background-color: #CB1D0D; border-radius: 20px; font-weight: bold; color: white;" [disabled]="form.invalid" (click)="Login()">Enviar</button>               
+                <p class="mt-3" style="text-align: center;">¿No tienes cuenta? <a routerLink="/register">Registrate</a></p>            </form>
         </div>
     </div>
 

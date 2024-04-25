@@ -11,18 +11,16 @@
         <div class="alert alert-success mt-2" *ngIf="message" style="width: 50%; margin: auto;">
             {{ message }}
         </div>
-        <div class="contenedor" >
-            <h1>Verifica que eres tu</h1>
+        <div class="contenedor" style="border: 3px solid black;" >
+            <h1>Verifica tu codigo</h1>
             <div class="text">
                 <h4>Registra el código de 6 digitos que se envió a tu correo</h4>
             </div>
             <form >
-                <input type="text" placeholder="Ingrese el código: ######" name="codigo" id="codigo" class="form-control" [(ngModel)]="codigo">
-                <div class="alert alert-warning mt-2" *ngIf="errorMsg" style="width: 50%; margin: auto;">
+                <input type="text" placeholder="Ingrese el código: ######" name="codigo" id="codigo" class="form-control" style="border: 1px solid black;" [(ngModel)]="codigo">                <div class="alert alert-warning mt-2" *ngIf="errorMsg" style="width: 50%; margin: auto;">
                     {{ errorMsg }}
                 </div>
-                <button type="submit" class="btn btn-primary" (click)="verificar()" >Verificar</button>
-            </form>
+                <button type="submit" class="btn btn-danger" style="color: white; font-weight: bold;" (click)="verificar()">Verificar</button>            </form>
         </div>
     </div>
 

@@ -39,22 +39,23 @@ export class LoginComponent {
     return this.form.get('password') as FormControl
   }
 
-
+  public error: any = null;
 
   Login() {
     this.ls.LogIn(this.email.value, this.password.value).subscribe(
       (response) => {
         console.log(response)
         this.errorMsg = null
+        this.error = null;
         this.msg.msg = response.msg
         localStorage.setItem('token', response.token)
         setTimeout(() => {
           this.route.navigate(['/verificar-codigo'])
         }, 2000)
       }, (error) => {
-        console.log(error)
         this.msg.msg = ""
         this.errorMsg = error.error
+        this.error = error.verificacion;
       }
     )
   }
