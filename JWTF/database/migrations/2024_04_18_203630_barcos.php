@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('user_id')->references('id')->on('users');
             $table->integer('horizontal');
             $table->integer('vertical');
+            $table->boolean('destroyed')->default(false);
 
 
             $table->timestamps();

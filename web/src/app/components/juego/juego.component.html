@@ -11,19 +11,19 @@
         <div class="barcos-restantes">
             <p>Tus barcos restantes</p>
             <div class="barcos">
-                <p>{{ barcosUsuario }}</p>
+                <p>{{ player1_id === user.id ? barcosUsuario : barcosRival }}</p>
             </div>
         </div>
         <div class="barcos-rival">
             <p>Barcos del rival</p>
             <div class="barcos">
-                <p>{{ barcosRival }}</p>
+                <p>{{ player1_id === user.id ? barcosRival : barcosUsuario }}</p>
             </div>
         </div>
         <div class="barcos-eliminados">
             <p>Barcos del rival eliminados</p>
             <div class="barcos">
-                <p>{{ 15 - barcosRival  }}</p>
+                <p>{{ 15 - (player1_id === user.id ? barcosRival : barcosUsuario) }}</p>
             </div>
         </div>
     </div>

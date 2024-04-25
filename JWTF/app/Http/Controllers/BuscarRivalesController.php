@@ -111,7 +111,7 @@ class BuscarRivalesController extends Controller
     }
 
 
-    public function cancelQueu(){
+    public function cancelQueue(){
         $userId = auth()->user()->id;
 
         $matchPlayer = MatchPlayer::where('user_id', $userId);

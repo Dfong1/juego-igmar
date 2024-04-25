@@ -1,14 +1,14 @@
-import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import Echo from 'laravel-echo';
-import Pusher from 'pusher-js';
-import { JuegoService } from '../../services/juego.service';
-import { JuegoActivo } from '../../Interfaces/juego-activo';
-import Swal from 'sweetalert2'
 import { UserService } from '../../services/user.service';
+import { JuegoService } from '../../services/juego.service';
 import { User } from '../../Interfaces/user-interface';
+import { JuegoActivo } from '../../Interfaces/juego-activo';
+import Swal from 'sweetalert2';
+import Echo from 'laravel-echo';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import Pusher from 'pusher-js';
 (window as any).Pusher = Pusher
 
 @Component({
@@ -20,10 +20,8 @@ import { Router } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class JuegoComponent implements OnInit {
-
   board: string[][] = [];
   oponentBoard: string[][] = [];
-
   echo: Echo = new Echo({
     broadcaster:'pusher',
     key:'123',
@@ -33,9 +31,6 @@ export class JuegoComponent implements OnInit {
     forceTLS:false,
     disableStatus:true,
   })
-
-  constructor(private us: UserService, private js:JuegoService, private router: Router) { } 
-  
   public user: User = {
     id: 0,
     email: "",
@@ -45,7 +40,6 @@ export class JuegoComponent implements OnInit {
     is_active: false,
     updated_at: ""
   }
-
   public juego: JuegoActivo = {
     game: {
       id: 0,
@@ -56,19 +50,25 @@ export class JuegoComponent implements OnInit {
       winner_id: 0,
     }
   }
+  public barcosRival: number = 15
+  public barcosUsuario: number = 15
+  public player1_id: number = 0
+  public player2_id: number = 0
 
-  public barcosRival: number = 0
-  public barcosUsuario: number = 0
-  
-
+  constructor(
+    private us: UserService,
+    private js: JuegoService,
+    private cdr: ChangeDetectorRef,
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
     this.generateBoard();
     this.generateOponentBoard();
-    this.websocketPartida()
+    this.websocketPartida();
+
     const savedPositions = JSON.parse(localStorage.getItem('positions') || '[]');
-  
-    
+
     this.us.getData().subscribe(
       (response) => {
         this.user = response
@@ -77,8 +77,8 @@ export class JuegoComponent implements OnInit {
 
     this.js.getPartida().subscribe(
       (response) => {
-        
         this.juego.game.id = response.game.id;
+        console.log(response)
         this.js.colocarBarcos(savedPositions, this.juego.game.id).subscribe(
           (response) => {
 
@@ -87,46 +87,45 @@ export class JuegoComponent implements OnInit {
             console.error('Error al colocar barcos:', error);
           }
         );
-  
       },
       (error) => {
         console.error('Error al obtener información del juego:', error);
-        if(error){
-          this.router.navigate(['/dashboard'])
-
-        }
       }
     );
-  
-  
-    this.websocket();
   }
-
 
   sendBoardPosition(vertical: number, horizontal: number) {
     const position = { vertical, horizontal };
-  
     console.log(this.barcosRival);
     console.log(position);
     console.log(this.juego.game.id);
-  
+
     this.js.movimiento(horizontal, vertical, this.juego.game.id).subscribe(
       (response) => {
         console.log(response);
-        
-        if (response.is_successful) {
+        if (this.player1_id == this.user.id) {
+          this.barcosRival -= response.is_successful
+        } else if (this.player2_id == this.user.id) {
+          this.barcosUsuario -= response.is_successful
+        }
+
+        console.log(this.barcosRival)
+        console.log(this.barcosUsuario)
+
+        if (response.is_successful == 1) {
           Swal.fire({
             icon: 'success',
             title: '¡Le diste!',
             text: 'Acabas de derribar un barco enemigo',
           });
-        }
-        else if(response.is_successful == false){          
+        } else if (response.is_successful == 0) {
           Swal.fire({
             icon: 'warning',
             title: 'No has atinado a un barco',
           });
         }
+        // Marcar para revisión del cambio
+        this.cdr.markForCheck();
       },
       (error) => {
         console.error('Error:', error);
@@ -140,51 +139,61 @@ export class JuegoComponent implements OnInit {
     );
   }
 
-  trackByIndex(index: number, item: any): number {
-    return index;
-  }
-
-  
-
- 
-  websocket() {
-    this.echo.channel('barcos.' + this.juego.game.id)
-      .listen('.BarcoEvents', (data: any) => {
-        console.log(typeof data.barcosRival)
-        this.barcosRival = data.barcosRival;
-        this.barcosUsuario = data.barcosUsuario;
-        console.log(data);
-      });
-    this.echo.connect();
-  }
-
   websocketPartida() {
     this.echo.channel('evento-juego').listen('.ActualizaJuego', (data: any) => {
-        console.log(data);
-
-        if(data.game.winner_id){
-          if (data.game.winner_id === this.user.id) {
-              Swal.fire({
-                  icon: 'success',
-                  title: '¡Felicidades! Has ganado',
-              });
-          } else if(data.game.winner_id !== this.user.id){
-              Swal.fire({
-                  icon: 'error',
-                  title: 'Perdiste la partida',
-              });
-          } 
-          this.router.navigate(['/dashboard'])
+      console.log("Datos recibidos del servidor:", data);
+      console.log("Barcos restantes del usuario actual:", this.barcosUsuario);
+      console.log("ID del usuario actual:", this.user.id);
+  
+      // Actualizar barcos destruidos por el usuario actual y el rival
+      if (this.user.id === data.game.player1_id) {
+        this.barcosUsuario -= (data.shipsDestroyedByCurrentUser > 0) ? 1 : 0;
+        this.barcosRival -= (data.shipsDestroyedByOpponent > 0) ? 1 : 0;
+      } else {
+        this.barcosUsuario -= (data.shipsDestroyedByOpponent > 0) ? 1 : 0;
+        this.barcosRival -= (data.shipsDestroyedByCurrentUser > 0) ? 1 : 0;
+      }
+  
+      console.log("Barcos restantes del usuario actual:", this.barcosUsuario);
+  
+      // Resto del código para mostrar mensajes de turno y resultado del juego
+      if (data.game.next_player_id === this.user.id) {
+        Swal.fire({
+          position: "top-end",
+          title: "Es tu turno",
+          showConfirmButton: false,
+          timer: 1500,
+          width: 250,
+          heightAuto: true
+        });
+      }
+  
+      if (data.game.winner_id) {
+        if (data.game.winner_id === this.user.id) {
+          Swal.fire({
+            icon: 'success',
+            title: '¡Felicidades! Has ganado',
+          });
+        } else if (data.game.winner_id !== this.user.id) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Perdiste la partida',
+          });
         }
+        this.router.navigate(['/dashboard']);
+      }
+  
+      // Marcar para revisión del cambio
+      this.cdr.markForCheck();
     });
-
+  
     this.echo.connect();
-}
+  }
 
   generateBoard(): void {
     const numCols = 5;
     const numRows = 8;
-    const greenCells = 15; 
+    const greenCells = 15;
 
     this.board = Array(numRows)
       .fill(null)
@@ -200,43 +209,27 @@ export class JuegoComponent implements OnInit {
   generateRandomPositions(numRows: number, numCols: number, count: number): { vertical: number, horizontal: number }[] {
     let positions: { vertical: number, horizontal: number }[] = [];
     const totalCells = numRows * numCols;
-  
+
     while (positions.length < count) {
       const randomIndex = Math.floor(Math.random() * totalCells);
       const vertical = Math.floor(randomIndex / numCols);
       const horizontal = randomIndex % numCols;
-  
+
       if (!positions.some(pos => pos.vertical === vertical && pos.horizontal === horizontal)) {
         positions.push({ vertical, horizontal });
       }
     }
-  
+
     if (!localStorage.getItem('positions')) {
       localStorage.setItem('positions', JSON.stringify(positions));
     } else {
       const savedPositions = JSON.parse(localStorage.getItem('positions') || '[]');
       positions = savedPositions;
     }
-  
+
     return positions;
   }
 
-  // sendBoardPosition(vertical: number, horizontal: number) {
-  //   const position = { vertical, horizontal };
-
-  //   console.log(this.barcosRival)
-  //   console.log(position)
-  //   this.websocket()
-
-  //   console.log(this.juego.game.id)
-
-  //   this.js.movimiento(horizontal, vertical, this.juego.game.id).subscribe(
-  //     (response) => {
-  //       console.log(response)
-  //     }
-  //   )
-    
-  // }
   generateOponentBoard(): void {
     const numCols = 5;
     const numRows = 8;
@@ -245,5 +238,4 @@ export class JuegoComponent implements OnInit {
       .fill(null)
       .map(() => Array(numCols).fill('#fffff'));
   }
-
 }

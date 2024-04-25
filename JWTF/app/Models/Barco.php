@@ -14,7 +14,8 @@ class Barco extends Model
         'game_id',
         'user_id',
         'horizontal',
-        'vertical'
+        'vertical',
+        'destroyed'
     ];
 
     public function game()
@@ -26,5 +27,5 @@ class Barco extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
-    
+
 }

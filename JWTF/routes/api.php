@@ -78,7 +78,7 @@ Route::group([
     Route::get('registrobatalla',[EstadisticasController::class,'registrobatallas']);
     Route::get('movimiento/{id}',[JuegosController::class,'hacerMovimiento']);
     Route::post('/buscar/partida', [BuscarRivalesController:: class, 'joinQueue']);
-    Route::post('/cancelar/partida', [BuscarRivalesController:: class, 'joinQueue']);
+    Route::post('/cancelar/partida', [BuscarRivalesController:: class, 'cancelQueue']);
     Route::get('/get-queue', [BuscarRivalesController:: class, 'getQueue']);
 
     Route::group(['prefix' => 'juego'], function () {

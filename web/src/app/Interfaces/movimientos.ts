@@ -1,4 +1,4 @@
 export interface Movimientos {
     message: string;
-    is_successful: boolean
+    is_successful: number
 }

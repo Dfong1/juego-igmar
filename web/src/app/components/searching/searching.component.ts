@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { JuegoService } from '../../services/juego.service';
 import Echo from 'laravel-echo';
@@ -15,7 +15,7 @@ import { SpinnerComponent } from '../spinner/spinner.component';
   styleUrl: './searching.component.css'
 })
 
-export class SearchingComponent implements OnInit {
+export class SearchingComponent implements OnInit, OnDestroy {
 
   constructor(private router: Router, private js: JuegoService) { }
 
@@ -51,6 +51,15 @@ export class SearchingComponent implements OnInit {
 
   }
 
+  cancelar(){
+    this.js.cancelarPartida().subscribe(
+      (response) => {
+        console.log(response)
+        this.router.navigate(['/dashboard'])
+      }
+    )
+  }
+
   websocket() {
     this.echo.channel('matchplayer').listen('.MatchPlayers', (res: any) => {
       if(res){
@@ -64,4 +73,13 @@ export class SearchingComponent implements OnInit {
     })
     
   }
+
+  ngOnDestroy(): void {
+    this.js.cancelarPartida().subscribe(
+      (response) => {
+        console.log(response)
+      }
+    )
+  }
+
 }

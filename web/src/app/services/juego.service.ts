@@ -14,6 +14,7 @@ export class JuegoService {
 
   private getPartidaURL = `${environment.api}/api/user/juego/get-game`
   private buscarPartidaURL = `${environment.api}/api/user/buscar/partida`
+  private cancelarQueueURL = `${environment.api}/api/user/cancelar/partida`
   private mandarMisilURL = `${environment.api}/api/user/juego/`
   private colocarBarcosURL = `${environment.api}/api/user/juego/`
   private getbarcosURL = `${environment.api}/api/user/getBarcosCount`
@@ -42,6 +43,10 @@ export class JuegoService {
 
   getbarcos(){
     return this.http.get(this.getbarcosURL);
+  }
+
+  cancelarPartida() {
+    return this.http.post(this.cancelarQueueURL, {})
   }
 
 }

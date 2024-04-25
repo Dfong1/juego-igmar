@@ -85,7 +85,7 @@ class AuthController extends Controller
             $user->codigoVerificado = true;
             $user->save();
             JWTAuth::parseToken()->invalidate();
-            $token = JWTAuth::fromUser($user);
+            $token = JWTAuth::fromUser($user, [], null);
     
             return response()->json(['msg' => 'Código de autenticación válido', 'data' => $user, 'token' => $token], 200);
         }
